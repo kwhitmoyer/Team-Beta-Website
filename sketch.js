@@ -19,7 +19,7 @@ function preload() {
 
     // loads run animation sprite sheet (strip), and seperates frames
     runAnim = loadAnimation( "assets/runAnimSheet.png",
-                  {frameSize: [32, 32], frames: 6});
+    {frameSize: [32, 32], frames: 6});            
 }
 
 // class for player character
