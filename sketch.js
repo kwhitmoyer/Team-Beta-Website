@@ -60,10 +60,9 @@ function setup() {
 
 
 function draw() {
-    background("#000000");   // arbitrary color choice, can be changed
+    background("#fce1b6");   // arbitrary color choice, can be changed
 
     playerMovement();
     wizard.normalizeMovement();
     castSpell();
-    despawnProjectiles();
 }

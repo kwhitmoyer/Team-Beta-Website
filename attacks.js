@@ -4,12 +4,9 @@ const fireballSpeed = 7;
 var currentAttack = 0;
 
 
-
-
 class spell {
     constructor() {
         this.sprite = new Sprite(wizard.posx, wizard.posy);
-        this.timeAlive = 0;
     }
     rotateSpell(rotation) {
         this.sprite.rotateTo(rotation, 1000, 0);
@@ -42,13 +39,6 @@ class electric extends spell {
         this.sprite.addAni(electricAnim);
         this.sprite.collider = "none";
     }
-    setDt() {
-        this.deltaT = deltaTime;
-    }
-    getDt() {
-        return this.deltaT;
-    }
-
 }
 
 
@@ -61,37 +51,41 @@ function castSpell() {
     let fire, elec;
     if (currentAttack > 1) { currentAttack = 0; };
     if (mouse.presses()) {
+        printProjectiles();
         if (currentAttack == 0) {
             fire = new fireball();
             fire.rotateSpell(mouse);
             fire.shoot(mouseX - wizard.posx, mouseY - wizard.posy, fireballSpeed);
+            fireballs.push(fire);
         } else if (currentAttack == 1) {
             elec = new electric();
-            elec.setDt();
             electrics.push(elec);
             elec.rotateSpell(mouse);
             elec.shoot(mouseX - wizard.posx, mouseY - wizard.posy, fireballSpeed);
+            electrics.push(elec);
         }
     }
     if (kb.presses(" ")) {
+        printProjectiles();
         fire = new fireball();
         if (wizard.sprite.mirror.x) {
             fire.setRotation(180);
             fire.shoot(-wizard.posx, 0, fireballSpeed);
+            fireballs.push(fire);
         } else {
             fire.shoot(wizard.posx, 0, fireballSpeed);
+            fireballs.push(fire);
         }
     }
     if (kb.presses("1")) { currentAttack++; };
 }
 
-function despawnProjectiles() {
-    for (var i = 0; i < electrics.length; ++i) {
-        // console.log(electrics[i].getDt());
-        if (electrics[i].getDt() > 1000) {
-            electrics[i].remove();
-        } else {
-            electrics[i].setDt(electrics[i].getDt + deltaTime);
-        }
+
+function printProjectiles() {
+    for (var i = 0; i < electrics.length; i++) {
+        console.log(electrics[i]);
+    }
+    for (var i = 0; i < fireballs.length; ++i) {
+        console.log(fireballs[i]);
     }
 }
