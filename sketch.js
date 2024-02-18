@@ -3,13 +3,11 @@ var idleAnim;              // declare variable for idle animation
 var runAnim;               // declare variable for run animation
 var i = 0;                 // argument for testPlayerMovement()
 
-// these variables track whether the player is moving
+// this variables track whether the player is moving
 // used to prevent animation from switching to idle while
 // still moving in some cases
-var movingUp = false;
-var movingDown = false;
-var movingRight = false;
-var movingLeft = false;
+
+var isMoving = false;
 
 // preload images for animation
 function preload() {
@@ -33,43 +31,52 @@ class player {
     // moves player right by setting velocity
     moveRight() {
         this.sprite.vel.x = 3;
-        this.sprite.changeAni(runAnim);
+        //this.sprite.changeAni(runAnim);
         this.sprite.mirror.x = false;
     }
 
     // moves player left by setting velocity
     moveLeft() {
         this.sprite.vel.x = -3;
-        this.sprite.changeAni(runAnim);
+        //this.sprite.changeAni(runAnim);
         this.sprite.mirror.x = true;
     }
 
     // moves player down by setting velocity
     moveDown() {
         this.sprite.vel.y = 3;
-        this.sprite.changeAni(runAnim);
+        //this.sprite.changeAni(runAnim);
       }
 
       // moves player up by setting velocity
     moveUp() {
         this.sprite.vel.y = -3;
-        this.sprite.changeAni(runAnim);
+        //this.sprite.changeAni(runAnim);
       }
 
     // stops player movement by setting velocity to 0
     stopMovementX() {
         this.sprite.vel.x = 0;
-        if (!movingUp && !movingDown) {
+        if (!this.moving()) {
             this.sprite.changeAni(idleAnim);
         }
     }
 
     stopMovementY() {
         this.sprite.vel.y = 0;
-        if (!movingRight && !movingLeft) {
+        if (!this.moving()) {
             this.sprite.changeAni(idleAnim);
         }
     }
+
+    moving(moving) {
+        if ((this.sprite.vel.y == 0) && (this.sprite.vel.x == 0)) {
+            moving = false;
+        } else {
+            moving = true;
+        }
+        return moving;
+    } 
 
     // class attributes
     sprite;           // player sprite
@@ -113,44 +120,28 @@ function draw() {
 // tried multiple different setups for these if statements
 // this one seems to work the best
 
-    // controls movement up
-    if (kb.presses('w')) {
-        movingUp = true;
-        wizard.moveUp();
+    if (kb.presses('right'))  { 
+        wizard.sprite.mirror.x = false;
+        wizard.sprite.changeAni(runAnim);
     }
-    if (kb.releases('w')) {
-        movingUp = false;
-        wizard.stopMovementY();
-    }
+    if (kb.pressing('right')) { wizard.moveRight(); }
+    if (kb.released('right')) { wizard.stopMovementX(); }
 
     // controls movement left
-    if (kb.presses('a')) {
-        movingLeft = true;
-        wizard.moveLeft();
+    if (kb.presses('left'))  { 
+        wizard.sprite.mirror.x = true;
+        wizard.sprite.changeAni(runAnim); 
     }
-    if (kb.releases('a')) {
-        movingLeft = false;
-        wizard.stopMovementX();
-    }
+    if (kb.pressing('left')) { wizard.moveLeft(); }
+    if (kb.released('left')) { wizard.stopMovementX(); }
 
     // controls movement down
-    if (kb.presses('s')) {
-        movingDown = true;
-        wizard.moveDown();
-    }
-    if (kb.releases('s')) {
-        movingDown = false;
-        wizard.stopMovementY();
+    if (kb.presses ('down')) { wizard.sprite.changeAni(runAnim); }
+    if (kb.pressing('down')) { wizard.moveDown(); }
+    if (kb.released('down')) { wizard.stopMovementY(); }
 
-    }
-
-    // controls movement right
-    if (kb.presses('d')) {
-        movingRight = true;
-        wizard.moveRight();
-    }
-    if (kb.releases('d')) {
-        movingRight = false;
-        wizard.stopMovementX();
-    }
+    // controls movement up
+    if (kb.presses ('up'))  { wizard.sprite.changeAni(runAnim); }
+    if (kb.pressing('up')) { wizard.moveUp(); }
+    if (kb.released('up')) { wizard.stopMovementY(); }
 }
