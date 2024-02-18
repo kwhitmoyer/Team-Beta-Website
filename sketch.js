@@ -1,6 +1,7 @@
 var wizard;                // declare variable that will refer to player object
 var idleAnim;              // declare variable for idle animation
 var runAnim;               // declare variable for run animation
+
 var i = 0;
 
 const playerSpeed = 3;
@@ -41,9 +42,11 @@ function loadanimations() {
 }
 
 
+
 // preload images for animation
 function preload() {
     loadanimations();
+
 }
 
 / class for player character
@@ -56,12 +59,18 @@ class player {
 
     // moves player right by setting velocity
     moveRight() {
+
         this.sprite.vel.x = playerSpeed;
+        //this.sprite.changeAni(runAnim);
+        this.sprite.mirror.x = false;
+
     }
 
     // moves player left by setting velocity
     moveLeft() {
         this.sprite.vel.x = -playerSpeed;
+        //this.sprite.changeAni(runAnim);
+        this.sprite.mirror.x = true;
     }
 
     // moves player down by setting velocity
@@ -69,16 +78,20 @@ class player {
         this.sprite.vel.y = playerSpeed;
     }
 
+    //this.sprite.changeAni(runAnim);
+
+
     // moves player up by setting velocity
     moveUp() {
         this.sprite.vel.y = -playerSpeed;
     }
+    //this.sprite.changeAni(runAnim);
 
     // stops player movement by setting velocity to 0
-    stopMovement() {
+    stopMovementX() {
         this.sprite.vel.x = 0;
-        this.sprite.vel.y = 0;
-        if (this.sprite.vel.x == 0 && this.sprite.vel.y == 0) {
+        if (!this.moving()) {
+
             this.sprite.changeAni(idleAnim);
         }
     }
@@ -95,6 +108,22 @@ class player {
     }
 
 
+    stopMovementY() {
+        this.sprite.vel.y = 0;
+        if (!this.moving()) {
+
+            this.sprite.changeAni(idleAnim);
+        }
+    }
+
+    moving(moving) {
+        if ((this.sprite.vel.y == 0) && (this.sprite.vel.x == 0)) {
+            moving = false;
+        } else {
+            moving = true;
+        }
+        return moving;
+    }
 
     // class attributes
     sprite;           // player sprite
@@ -111,7 +140,18 @@ function testPlayerMovement(i) {
     if (i > 300) { wizard.moveUp(); };
 }
 
-// setup canvas and player sprite
+// preload images for animation - executed once
+function preload() {
+    // loads idle animation sprite sheet (strip), and seperates frames
+    idleAnim = loadAnimation("assets/idleAnimSheet.png",
+        { frameSize: [32, 32], frames: 2 });
+
+    // loads run animation sprite sheet (strip), and seperates frames
+    runAnim = loadAnimation("assets/runAnimSheet.png",
+        { frameSize: [32, 32], frames: 6 });
+}
+
+// setup canvas and player sprite - executed once
 function setup() {
     createCanvas(windowWidth, windowHeight);
     wizard = new player();
@@ -129,23 +169,30 @@ function draw() {
         wizard.sprite.changeAni(runAnim);
     }
     if (kb.pressing('right')) { wizard.moveRight(); }
-    if (kb.released('right')) { wizard.stopMovement(); }
+    if (kb.released('right')) { wizard.stopMovementX(); }
+
 
     // controls movement left
-    if (kb.presses('left')) {
-        wizard.sprite.mirror.x = true;
-        wizard.sprite.changeAni(runAnim);
+    if (kb.presses('a')) {
+        movingLeft = true;
+        wizard.moveLeft();
     }
+    if (kb.releases('a')) {
+        movingLeft = false;
+        wizard.stopMovementX();
+    }
+
     if (kb.pressing('left')) { wizard.moveLeft(); }
-    if (kb.released('left')) { wizard.stopMovement(); }
+    if (kb.released('left')) { wizard.stopMovementX(); }
 
     // controls movement down
     if (kb.presses('down')) { wizard.sprite.changeAni(runAnim); }
     if (kb.pressing('down')) { wizard.moveDown(); }
-    if (kb.released('down')) { wizard.stopMovement(); }
+    if (kb.released('down')) { wizard.stopMovementY(); }
 
     // controls movement up
     if (kb.presses('up')) { wizard.sprite.changeAni(runAnim); }
     if (kb.pressing('up')) { wizard.moveUp(); }
-    if (kb.released('up')) { wizard.stopMovement(); }
+    if (kb.released('up')) { wizard.stopMovementY(); }
+
 }
