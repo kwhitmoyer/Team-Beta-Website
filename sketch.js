@@ -3,11 +3,13 @@ var idleAnim;              // declare variable for idle animation
 var runAnim;               // declare variable for run animation
 var i = 0;                 // argument for testPlayerMovement()
 
+
 // this variables track whether the player is moving
 // used to prevent animation from switching to idle while
 // still moving in some cases
 
 var isMoving = false;
+
 
 // preload images for animation
 function preload() {
@@ -17,7 +19,7 @@ function preload() {
 
     // loads run animation sprite sheet (strip), and seperates frames
     runAnim = loadAnimation( "assets/runAnimSheet.png",
-                  {frameSize: [32, 32], frames: 6});
+    {frameSize: [32, 32], frames: 6});            
 }
 
 // class for player character
@@ -31,7 +33,10 @@ class player {
     // moves player right by setting velocity
     moveRight() {
         this.sprite.vel.x = 3;
+ 
         //this.sprite.changeAni(runAnim);
+
+ 
         this.sprite.mirror.x = false;
     }
 
@@ -39,6 +44,7 @@ class player {
     moveLeft() {
         this.sprite.vel.x = -3;
         //this.sprite.changeAni(runAnim);
+
         this.sprite.mirror.x = true;
     }
 
@@ -46,18 +52,21 @@ class player {
     moveDown() {
         this.sprite.vel.y = 3;
         //this.sprite.changeAni(runAnim);
+
       }
 
       // moves player up by setting velocity
     moveUp() {
         this.sprite.vel.y = -3;
         //this.sprite.changeAni(runAnim);
+
       }
 
     // stops player movement by setting velocity to 0
     stopMovementX() {
         this.sprite.vel.x = 0;
         if (!this.moving()) {
+
             this.sprite.changeAni(idleAnim);
         }
     }
@@ -65,6 +74,7 @@ class player {
     stopMovementY() {
         this.sprite.vel.y = 0;
         if (!this.moving()) {
+
             this.sprite.changeAni(idleAnim);
         }
     }
@@ -127,11 +137,17 @@ function draw() {
     if (kb.pressing('right')) { wizard.moveRight(); }
     if (kb.released('right')) { wizard.stopMovementX(); }
 
+
     // controls movement left
-    if (kb.presses('left'))  { 
-        wizard.sprite.mirror.x = true;
-        wizard.sprite.changeAni(runAnim); 
+    if (kb.presses('a')) {
+        movingLeft = true;
+        wizard.moveLeft();
     }
+    if (kb.releases('a')) {
+        movingLeft = false;
+        wizard.stopMovementX();
+    }
+
     if (kb.pressing('left')) { wizard.moveLeft(); }
     if (kb.released('left')) { wizard.stopMovementX(); }
 
@@ -144,4 +160,5 @@ function draw() {
     if (kb.presses ('up'))  { wizard.sprite.changeAni(runAnim); }
     if (kb.pressing('up')) { wizard.moveUp(); }
     if (kb.released('up')) { wizard.stopMovementY(); }
+
 }
