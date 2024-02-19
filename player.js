@@ -95,17 +95,13 @@ function playerMovement() {
 
 
     // controls movement left
-    if (kb.presses('a')) {
-        movingLeft = true;
-        wizard.moveLeft();
+    if (kb.presses('left')) {
+        wizard.sprite.mirror.x = true;
+        wizard.sprite.changeAni(runAnim);
     }
-    if (kb.releases('a')) {
-        movingLeft = false;
-        wizard.stopMovementX();
-    }
-
     if (kb.pressing('left')) { wizard.moveLeft(); }
     if (kb.released('left')) { wizard.stopMovementX(); }
+
 
     // controls movement down
     if (kb.presses('down')) { wizard.sprite.changeAni(runAnim); }
