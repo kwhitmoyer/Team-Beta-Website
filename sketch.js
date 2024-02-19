@@ -65,6 +65,8 @@ function preload() {
 function setup() {
     createCanvas(windowWidth, windowHeight);
     wizard = new player();
+    tempSprite = new Sprite();
+    wizard.sprite.overlaps(tempSprite);
 }
 
 
