@@ -10,18 +10,6 @@ var i = 0;                 // argument for testPlayerMovement()
 
 var isMoving = false;
 
-
-// preload images for animation
-function preload() {
-    // loads idle animation sprite sheet (strip), and seperates frames
-    idleAnim = loadAnimation( "assets/idleAnimSheet.png",
-    {frameSize: [32, 32], frames: 2});
-
-    // loads run animation sprite sheet (strip), and seperates frames
-    runAnim = loadAnimation( "assets/runAnimSheet.png",
-    {frameSize: [32, 32], frames: 6});            
-}
-
 // class for player character
 class player {
     // class methods
@@ -116,6 +104,8 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     wizard = new player();
     idleAnim.frameDelay = 18;     // slows down idle animation
+    tempSprite = new Sprite();
+    wizard.sprite.overlaps(tempSprite);
 }
 
 // executed repeatedly
@@ -133,6 +123,12 @@ function draw() {
     // ++i;
     // if (i > 400) { i = 0; };
 
+    // Center the canvas around the player
+    translate(width / 2 - wizard.sprite.position.x, height / 2 - wizard.sprite.position.y);
+
+    // Draw the player
+    wizard.sprite.draw();
+
 // tried multiple different setups for these if statements
 // this one seems to work the best
 
@@ -145,15 +141,10 @@ function draw() {
 
 
     // controls movement left
-    if (kb.presses('a')) {
-        movingLeft = true;
-        wizard.moveLeft();
+    if (kb.presses('left'))  { 
+        wizard.sprite.mirror.x = true;
+        wizard.sprite.changeAni(runAnim);
     }
-    if (kb.releases('a')) {
-        movingLeft = false;
-        wizard.stopMovementX();
-    }
-
     if (kb.pressing('left')) { wizard.moveLeft(); }
     if (kb.released('left')) { wizard.stopMovementX(); }
 
