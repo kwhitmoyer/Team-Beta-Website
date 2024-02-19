@@ -4,9 +4,6 @@ var runAnim;               // declare variable for run animation
 
 var i = 0;
 
-const playerSpeed = 3;
-var isMoving = false;
-
 let electricAnim;
 const electricFrames = 20;
 
@@ -73,7 +70,7 @@ function setup() {
 
 function draw() {
     background("#fce1b6");   // arbitrary color choice, can be changed
-    
+
     // Center the canvas around the player
     translate(width / 2 - wizard.sprite.position.x, height / 2 - wizard.sprite.position.y);
 
@@ -83,5 +80,6 @@ function draw() {
     playerMovement();
     wizard.normalizeMovement();
     castSpell();
+
 
 }

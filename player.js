@@ -1,4 +1,8 @@
 
+const playerSpeed = 3;
+var isMoving = false;
+
+
 // class for player character
 class player {
     // class methods
@@ -51,10 +55,10 @@ class player {
     }
 
     get posx() {
-        return this.sprite.x;
+        return this.sprite.position.x;
     }
     get posy() {
-        return this.sprite.y;
+        return this.sprite.position.y;
     }
 
 
