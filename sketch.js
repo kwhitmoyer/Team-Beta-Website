@@ -10,18 +10,6 @@ var i = 0;                 // argument for testPlayerMovement()
 
 var isMoving = false;
 
-
-// preload images for animation
-function preload() {
-    // loads idle animation sprite sheet (strip), and seperates frames
-    idleAnim = loadAnimation( "assets/idleAnimSheet.png",
-    {frameSize: [32, 32], frames: 2});
-
-    // loads run animation sprite sheet (strip), and seperates frames
-    runAnim = loadAnimation( "assets/runAnimSheet.png",
-    {frameSize: [32, 32], frames: 6});            
-}
-
 // class for player character
 class player {
     // class methods
