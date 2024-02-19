@@ -7,6 +7,8 @@ var i = 0;
 let electricAnim;
 const electricFrames = 20;
 
+
+// Loads all animations for sprites in the project.
 function loadanimations() {
     // loads idle animation sprite sheet (strip), and seperates frames
 
@@ -80,6 +82,9 @@ function draw() {
     wizard.sprite.draw();
 
     playerMovement();
+
+    // Normalize movement, so player does not move faster in diagonal movements
+    // see pyth. theorem
     wizard.normalizeMovement();
     castSpell();
 
