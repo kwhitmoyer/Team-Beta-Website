@@ -67,14 +67,7 @@ function testPlayerMovement(i) {
     if (i > 300) { wizard.moveUp(); };
 }
 
-<<<<<<< Updated upstream
-// setup canvas and player sprite
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-    wizard = new player();
-    idleAnim.frameDelay = 18;     // slows down idle animation
-}
-=======
+
 // preload images for animation - executed once
 function preload() {
     loadanimations();
@@ -88,7 +81,6 @@ function preload() {
 //     tempSprite = new Sprite();
 //     wizard.sprite.overlaps(tempSprite);
 // }
->>>>>>> Stashed changes
 
 var i = 0;             // argument for testPlayerMovement()
 
