@@ -40,15 +40,6 @@ function loadanimations() {
 
 }
 
-
-
-// preload images for animation
-function preload() {
-    loadanimations();
-
-}
-
-
 // tests movement functions - not sure if this is good enough or not (never done TDD tbh)
 var i = 0;             // argument for testPlayerMovement()
 function testPlayerMovement(i) {
