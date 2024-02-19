@@ -121,6 +121,12 @@ function setup() {
 // executed repeatedly
 function draw() {
     background("#fce1b6");   // arbitrary color choice, can be changed
+    
+    // Center the canvas around the player
+    translate(width / 2 - wizard.sprite.position.x, height / 2 - wizard.sprite.position.y);
+
+    // Draw the player
+    wizard.sprite.draw();
 
     // for movement testing
     // testPlayerMovement(i);
