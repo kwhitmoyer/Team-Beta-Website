@@ -77,7 +77,7 @@ class angleShot {
     }
 
     lockPos() {
-
+        var newShot = new angleShot(player.posx + mouseX, mouseY);
     }
 
 }
