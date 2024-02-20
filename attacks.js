@@ -57,11 +57,53 @@ class electric extends spell {
     }
 }
 
+class angleShot {
+    constructor(x, y) {
+        this.sprite = new Sprite();
+        this.sprite.diameter = 8;
+        this.sprite.position.x = x;
+        this.sprite.position.y = y;
+        this.sprite.collider = "none";
+        this.sprite.color = "white";
+    }
+
+    setPos(x, y) {
+        this.sprite.position.x = x;
+        this.sprite.position.y = y;
+    }
+    despawn() {
+        this.sprite.remove();
+        delete this;
+    }
+
+    lockPos() {
+
+    }
+
+}
+
+var spellFlag = false;
+let projectile;
+let angleProj;
+
 // Spawns either an electric attack, or fireball at player's position, and adds
 // a constant velocity to where the mouse is. Changeable by const spellSpeed.
 function castSpell() {
-    let fire, elec;
-    if (currentAttack > 1) { currentAttack = 0; };
+
+    if (currentAttack > 2) { currentAttack = 0; };
+
+    if (currentAttack == 2 && !spellFlag) {
+        angleProj = new angleShot(wizard.posx + mouseX - windowWidth / 2, wizard.posy + mouseY - windowHeight / 2);
+        spellFlag = true;
+        makeAngle();
+    } else if (spellFlag && currentAttack == 2) {
+        angleProj.setPos(wizard.posx + mouseX - windowWidth / 2, wizard.posy + mouseY - windowHeight / 2);
+        makeAngle();
+    } else if (spellFlag) {
+        spellFlag = false;
+        angleProj.despawn();
+    }
+
     if (mouse.presses()) {
 
         // Angle of which to rotate the spell to face away from player
@@ -72,33 +114,41 @@ function castSpell() {
         if (currentAttack == 0) {
             // 0 is fireball attack for now...
 
-            fire = new fireball();
+            projectile = new fireball();
 
             // rotateTo() in fireball child class needs object, which is why {x, y} is passed
-            fire.rotateSpell({ x, y });
+            projectile.rotateSpell({ x, y });
 
             // Shoot takes 3 parameters: velocity in x direction, y direction, and the spell speed
             // this function passes those parameters
-            fire.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
+            projectile.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
         } else if (currentAttack == 1) {
 
             // Above methods are used here as well.
-            elec = new electric();
-            elec.rotateSpell({ x, y });
-            elec.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
+            projectile = new electric();
+            projectile.rotateSpell({ x, y });
+            projectile.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
         }
     }
 
     // When player presses space, fireballs are only in x-direction, wherever they are facing
     if (kb.presses(" ")) {
-        fire = new fireball();
+        projectile = new fireball();
 
         if (wizard.sprite.mirror.x) {
-            fire.setRotation(180);
-            fire.shoot(-wizard.posx, 0, spellSpeed);
+            projectile.setRotation(180);
+            projectile.shoot(-wizard.posx, 0, spellSpeed);
         } else {
-            fire.shoot(wizard.posx, 0, spellSpeed);
+            projectile.shoot(wizard.posx, 0, spellSpeed);
         }
     }
     if (kb.presses("1")) { currentAttack++; };
+}
+
+function makeAngle() {
+    let angleProj2;
+    if (mouse.presses()) {
+        angleProj2 = angleProj.lockPos();
+
+    }
 }
