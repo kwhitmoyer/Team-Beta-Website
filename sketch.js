@@ -54,14 +54,16 @@ function preload() {
     loadanimations();
 }
 
-// setup canvas and player sprite - executed once
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-    wizard = new player();
-    tempSprite = new Sprite();
-    wizard.sprite.overlaps(tempSprite);
-}
+// Currently implemented in level0
+// // setup canvas and player sprite - executed once
+// function setup() {
+//     createCanvas(windowWidth, windowHeight);
+//     wizard = new player();
+//     tempSprite = new Sprite();
+//     wizard.sprite.overlaps(tempSprite);
+// }
 
+var i = 0;             // argument for testPlayerMovement()
 
 function draw() {
     background("#fce1b6");   // arbitrary color choice, can be changed
