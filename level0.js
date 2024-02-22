@@ -1,4 +1,6 @@
 let floor1, floor7, torches, tilesGroup;
+var Golem1;
+var Golem2;
 
 
 function setup() {
@@ -22,7 +24,9 @@ function setup() {
     floor7.img = 'assets/levelTiles/Dungeon tileset/tile007.png';
     torches.img = 'assets/levelTiles/Dungeon tileset/01.gif';
 
-    floor7.collider = 'static';
+    floor1.collider  = 'kinematic';
+    floor7.collider  = 'kinematic';
+    torches.collider = 'kinematic';
 
     wizard = new player();
 
@@ -52,12 +56,18 @@ function setup() {
         floor1.h + 6
     );
 
-    tilesGroup.layer = 1;
+    // tilesGroup.layer = 1;
     torches.layer = 0;
-    wizard.sprite.layer = 99;
+    // wizard.sprite.layer = 99;
     floor7.rotationLock = true;
     wizard.sprite.rotationLock = true;
     wizard.sprite.bounciness = 0;
     wizard.sprite.overlaps(torches);
     wizard.sprite.overlaps(floor1);
+
+    //createGolemGroup();
+    //createGolem(200, 20);
+
+    //Golem1 = new golem(200, 450);
+    //Golem2 = new golem(200, 0);
 }

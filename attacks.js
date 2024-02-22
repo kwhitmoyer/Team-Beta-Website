@@ -1,4 +1,5 @@
 var fireballAnim;
+const spells = [];
 const spellSpeed = 7;
 
 var currentAttack = 0;
@@ -44,7 +45,7 @@ class fireball extends spell {
         this.sprite.collider = 'kinematic';
         this.sprite.life = 100;
         this.sprite.diameter = 9;
-
+        this.sprite.debug = true;
     }
 }
 
@@ -56,6 +57,7 @@ class electric extends spell {
         this.sprite.addAni(electricAnim);
         this.sprite.collider = "none";
         this.sprite.life = 100;
+        this.sprite.debug = true;
     }
 }
 
@@ -178,6 +180,10 @@ function castSpell() {
             projectile = new fireball();
             tst = projectile;
 
+            // adds spell to array for overlap detection
+            spells.push(fire);
+            golems.overlaps(fire.sprite);
+
             // rotateTo() in fireball child class needs object, which is why {x, y} is passed
             projectile.rotateSpell({ x, y });
 
@@ -187,16 +193,25 @@ function castSpell() {
         } else if (currentAttack == 1) {
 
             // Above methods are used here as well.
-            projectile = new electric();
-            projectile.rotateSpell({ x, y });
-            projectile.shoot(mouseX - offsetX, mouseY - offsetY, spellSpeed);
+            elec = new electric();
+
+            // adds spell to array for overlap detection
+            spells.push(elec);
+            golems.overlaps(elec.sprite);
+
+            elec.rotateSpell({ x, y });
+            elec.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
         }
     }
 
     // When player presses space, fireballs are only in x-direction, wherever they are facing
     if (kb.presses(" ")) {
-        projectile = new fireball();
-        console.log(wizard.sprite.mirror.x);
+        fire = new fireball();
+
+        // adds spell to array for overlap detection
+        spells.push(fire);
+        golems.overlaps(fire.sprite);
+
         if (wizard.sprite.mirror.x) {
             projectile.setRotation(180);
             projectile.shoot(-wizard.posx, 0, -spellSpeed);
