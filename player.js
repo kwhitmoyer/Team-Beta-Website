@@ -7,8 +7,10 @@ var isMoving = false;
 class player {
     // class methods
     constructor() {
-        this.sprite = new Sprite(25, 25);
+        // creates new sprite at 25, 25 with a physical size of 20 x 32 pixels
+        this.sprite = new Sprite(25, 25, 20, 32);
         this.sprite.addAni(idleAnim);
+        //this.sprite.debug = true;
     }
 
     // moves player right by setting velocity
@@ -81,6 +83,7 @@ class player {
 
     // class attributes
     sprite;           // player sprite
+    health = 1;       // player health - currently operating on assumption that we want 1 hit death
 }
 
 
