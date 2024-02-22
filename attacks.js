@@ -3,6 +3,7 @@ const spellSpeed = 7;
 
 var currentAttack = 0;
 
+
 // Parent class for all spells (Fireball and Electric)
 class spell {
     constructor() {
@@ -40,8 +41,9 @@ class fireball extends spell {
     constructor() {
         super();
         this.sprite.addAni(fireballAnim);
-        this.sprite.collider = 'none';
+        this.sprite.collider = 'kinematic';
         this.sprite.life = 100;
+        this.sprite.diameter = 9;
 
     }
 }
@@ -65,11 +67,14 @@ class angleShot {
         this.sprite.position.y = y;
         this.sprite.collider = "none";
         this.sprite.color = "white";
+        this.moveable = true;
     }
 
     setPos(x, y) {
-        this.sprite.position.x = x;
-        this.sprite.position.y = y;
+        if (this.moveable) {
+            this.sprite.position.x = x;
+            this.sprite.position.y = y;
+        }
     }
     despawn() {
         this.sprite.remove();
@@ -79,76 +84,164 @@ class angleShot {
     lockPos() {
         var newShot = new angleShot(player.posx + mouseX, mouseY);
     }
+    get posx() {
+        return wizard.posx + mouseX - offsetX;
+    }
+    get posy() {
+        return wizard.posy + mouseY - offsetY;
+    }
+    freezePosition() {
+        this.moveable = false;
+        this.sprite.position.x.lockPos;
+        this.sprite.position.y.lockPos;
+    }
+    drawLine(node) {
+        line(this.sprite.x, this.sprite.y, node.sprite.x, node.sprite.y);
+        // line(angleProj.sprite.x, angleProj.sprite.y, secondAngle.sprite.x, secondAngle.sprite.y);
 
+    }
+    unlockPosition() {
+        this.moveable = true;
+        this.despawn();
+    }
+    posX(node) {
+        return wizard.posx + node.sprite.x - offsetX;
+    }
+    posY(node) {
+        return wizard.posy + node.sprite.y - offsetY;
+    }
+
+    fireProj() {
+        this.projSprite = new Sprite(wizard.posx, wizard.posy);
+        this.projSprite.addAni(angleShotAnim);
+        // this.sprite.diameter = 0.1;
+        this.projSprite.scale = 0.1;
+        this.projSprite.vel.x = angleProj.sprite.x - wizard.posx;
+        this.projSprite.vel.y = angleProj.sprite.y - wizard.posy;
+        this.projSprite.vel.normalize().mult(3);
+        this.projSprite.collider = "kinetic";
+        // this.projSprite.x = wizard.posx
+
+    }
 }
+
 
 var spellFlag = false;
 let projectile;
 let angleProj;
+var offsetX;
+var offsetY;
+var hasRun = false;
+var tst;
 
 // Spawns either an electric attack, or fireball at player's position, and adds
 // a constant velocity to where the mouse is. Changeable by const spellSpeed.
 function castSpell() {
+    // to optimize calculating offsets, instead of every frame.
+    if (!hasRun) {
+        offsetX = windowWidth / 2;
+        offsetY = windowHeight / 2;
+        hasRun = true;
+    }
+
+
 
     if (currentAttack > 2) { currentAttack = 0; };
 
     if (currentAttack == 2 && !spellFlag) {
-        angleProj = new angleShot(wizard.posx + mouseX - windowWidth / 2, wizard.posy + mouseY - windowHeight / 2);
+        // create angleshot at cursor position, and prepare to follow cursor
+        angleProj = new angleShot(wizard.posx + mouseX - offsetX, wizard.posy + mouseY - offsetY);
         spellFlag = true;
         makeAngle();
     } else if (spellFlag && currentAttack == 2) {
-        angleProj.setPos(wizard.posx + mouseX - windowWidth / 2, wizard.posy + mouseY - windowHeight / 2);
+        // set position of circle to the cursor if the firing mode is angleshot
+        angleProj.setPos(wizard.posx + mouseX - offsetX, wizard.posy + mouseY - offsetY);
         makeAngle();
     } else if (spellFlag) {
+        // angleshot is deselected
         spellFlag = false;
         angleProj.despawn();
     }
 
+
     if (mouse.presses()) {
 
+
         // Angle of which to rotate the spell to face away from player
-        var x = wizard.posx + mouseX - windowWidth / 2;
-        var y = wizard.posy + mouseY - windowHeight / 2;
+        var x = wizard.posx + mouseX - offsetX;
+        var y = wizard.posy + mouseY - offsetY;
 
 
         if (currentAttack == 0) {
             // 0 is fireball attack for now...
 
             projectile = new fireball();
+            tst = projectile;
 
             // rotateTo() in fireball child class needs object, which is why {x, y} is passed
             projectile.rotateSpell({ x, y });
 
             // Shoot takes 3 parameters: velocity in x direction, y direction, and the spell speed
             // this function passes those parameters
-            projectile.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
+            projectile.shoot(mouseX - offsetX, mouseY - offsetY, spellSpeed);
         } else if (currentAttack == 1) {
 
             // Above methods are used here as well.
             projectile = new electric();
             projectile.rotateSpell({ x, y });
-            projectile.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
+            projectile.shoot(mouseX - offsetX, mouseY - offsetY, spellSpeed);
         }
     }
 
     // When player presses space, fireballs are only in x-direction, wherever they are facing
     if (kb.presses(" ")) {
         projectile = new fireball();
-
+        console.log(wizard.sprite.mirror.x);
         if (wizard.sprite.mirror.x) {
             projectile.setRotation(180);
-            projectile.shoot(-wizard.posx, 0, spellSpeed);
+            projectile.shoot(-wizard.posx, 0, -spellSpeed);
         } else {
             projectile.shoot(wizard.posx, 0, spellSpeed);
         }
+        console.log(projectile);
     }
     if (kb.presses("1")) { currentAttack++; };
 }
 
-function makeAngle() {
-    let angleProj2;
-    if (mouse.presses()) {
-        angleProj2 = angleProj.lockPos();
+// var angles = [];
+var angleFlag = false;
+var secondAngleFlag = false;
+var secondAngle;
 
+
+
+function makeAngle() {
+
+    if (secondAngleFlag) {
+        secondAngle.drawLine(angleProj);
+        projectile = secondAngle.fireProj();
+        secondAngleFlag = false;
+        angleFlag = false;
+        secondAngle.despawn();
+        angleProj.despawn();
+    }
+
+
+    if (angleFlag) {
+        angleProj.drawLine(wizard);
+        secondAngle.setPos(wizard.posx + mouseX - offsetX, wizard.posy + mouseY - offsetY);
+        // secondAngle.drawLine(angleProj);
+        if (mouse.presses()) {
+            secondAngle.freezePosition();
+            secondAngle.drawLine(angleProj);
+            secondAngleFlag = true;
+        }
+    }
+    if (mouse.presses() && !angleFlag) {
+        // freeze position of circle
+        angleProj.freezePosition();
+        // make sure the circle does not disappear
+        angleFlag = true;
+        secondAngle = new angleShot(wizard.posx + mouseX - offsetX, wizard.posy + mouseY - offsetY);
     }
 }

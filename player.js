@@ -9,6 +9,7 @@ class player {
     constructor() {
         this.sprite = new Sprite(25, 25);
         this.sprite.addAni(idleAnim);
+        this.sprite.collider = 'none';
     }
 
     // moves player right by setting velocity

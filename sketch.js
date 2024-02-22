@@ -7,6 +7,9 @@ var i = 0;
 let electricAnim;
 const electricFrames = 20;
 
+let angleShotAnim;
+
+var GameState = [];
 
 // Loads all animations for sprites in the project.
 function loadanimations() {
@@ -38,6 +41,15 @@ function loadanimations() {
     );
     electricAnim.frameDelay = electricFrames;
 
+    angleShotAnim = loadAnimation(
+        "assets/tile001.png",
+        "assets/tile002.png",
+        "assets/tile003.png",
+        "assets/tile004.png"
+    );
+
+    angleShotAnim.frameDelay = 15;
+
 }
 
 // tests movement functions - not sure if this is good enough or not (never done TDD tbh)
@@ -65,11 +77,17 @@ function preload() {
 
 var i = 0;             // argument for testPlayerMovement()
 
+function drawScene() {
+    GameState = ["level0"]; // First will be menu, but that is not implemented yet.
+}
+
+var test;
+
 function draw() {
     background("#fce1b6");   // arbitrary color choice, can be changed
 
     // Center the canvas around the player
-    translate(width / 2 - wizard.sprite.position.x, height / 2 - wizard.sprite.position.y);
+    translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
 
     // Draw the player
     wizard.sprite.draw();
@@ -80,6 +98,7 @@ function draw() {
     // see pyth. theorem
     wizard.normalizeMovement();
     castSpell();
+    // line(-175, 0 + 75, -175, windowHeight + 75);
 
-
+    // x border is -175 before despawning
 }
