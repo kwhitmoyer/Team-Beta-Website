@@ -58,6 +58,7 @@ function loadanimations() {
     );
 
     angleShotAnim.frameDelay = 15;
+    // angleShotAnim.scale = 0.2;
 
 }
 
