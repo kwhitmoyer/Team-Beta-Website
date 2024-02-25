@@ -81,6 +81,16 @@ class player {
         return moving;
     }
 
+    die(){
+        this.health = 0; 
+        //Stop all player movement 
+        this.sprite.vel.y = 0;
+        this.sprite.vel.x = 0; 
+        //Play the death animation once and once only
+        this.sprite.changeAni(deathAnim);
+        this.sprite.animation.looping = false;  
+    }
+
     // class attributes
     sprite;           // player sprite
     health = 1;       // player health - currently operating on assumption that we want 1 hit death
@@ -89,6 +99,9 @@ class player {
 
 
 function playerMovement() {
+
+  //keeps wizard from moving if they are dead
+  if (wizard.health > 0){
     if (kb.presses('right')) {
         wizard.sprite.mirror.x = false;
         wizard.sprite.changeAni(runAnim);
@@ -115,4 +128,7 @@ function playerMovement() {
     if (kb.presses('up')) { wizard.sprite.changeAni(runAnim); }
     if (kb.pressing('up')) { wizard.moveUp(); }
     if (kb.released('up')) { wizard.stopMovementY(); }
+
+    if (kb.presses('y')) {wizard.die();} 
+  }
 }
