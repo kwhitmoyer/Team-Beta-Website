@@ -7,6 +7,9 @@ var i = 0;
 let electricAnim;
 const electricFrames = 20;
 
+let angleShotAnim;
+
+var GameState = [];
 
 // Loads all animations for sprites in the project.
 function loadanimations() {
@@ -21,19 +24,19 @@ function loadanimations() {
         { frameSize: [32, 32], frames: 6 });
 
     //loads death animation sprite sheet and seperates frames
-    deathAnim = loadAnimation("assets/deathAnimSheet.png", 
-        {frameSize: [32, 32], frames: 10}); 
+    deathAnim = loadAnimation("assets/deathAnimSheet.png",
+        { frameSize: [32, 32], frames: 10 });
 
     // loads idle animation for golem enemy
     golemIdle = loadAnimation("assets/golemIdle.png",
-    { framesize: [16, 16], frames: 4 });
-    golemIdle.frameDelay = 17;   
+        { framesize: [16, 16], frames: 4 });
+    golemIdle.frameDelay = 17;
 
     // loads run animation
     golemRun = loadAnimation("assets/golemIdle.png",
-    { framesize: [16, 16], frames: 4 });
+        { framesize: [16, 16], frames: 4 });
     golemRun.frameDelay = 5;
-    
+
 
     fireballAnim = loadAnimation(
         'assets/fireball/FB001.png',
@@ -50,6 +53,16 @@ function loadanimations() {
         "assets/electric/tile4.png"
     );
     electricAnim.frameDelay = electricFrames;
+
+    angleShotAnim = loadAnimation(
+        "assets/tile001.png",
+        "assets/tile002.png",
+        "assets/tile003.png",
+        "assets/tile004.png"
+    );
+
+    angleShotAnim.frameDelay = 15;
+    // angleShotAnim.scale = 0.2;
 
 }
 
@@ -79,16 +92,23 @@ function preload() {
 
 var i = 0;             // argument for testPlayerMovement()
 
+function drawScene() {
+    GameState = ["level0"]; // First will be menu, but that is not implemented yet.
+}
+
+var test;
+
 function draw() {
     background("#fce1b6");   // arbitrary color choice, can be changed
 
     text('WASD to move\n' +
-         'Click to attack (mouse to aim)\n' +
-         'Space to shoot fireball sideways\n' +
-         'Press 1 to change attack\n' +
-         'Press b to spawn golem enemy\n' +
-         'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
-         'Press y to die', 50, 50);
+
+        'Click to attack (mouse to aim)\n' +
+        'Space to shoot fireball sideways\n' +
+        'Press 1 to change attack\n' +
+        'Press b to spawn golem enemy\n' +
+        'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
+        'Press y to die', 50, 50);
 
     // press b to spawn golem in random pos
     if (kb.presses('b')) {
@@ -97,7 +117,7 @@ function draw() {
     }
 
     // Center the canvas around the player
-    translate(width / 2 - wizard.sprite.position.x, height / 2 - wizard.sprite.position.y);
+    translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
 
     // Draw the player
     wizard.sprite.draw();

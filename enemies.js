@@ -32,7 +32,7 @@ function createGolemGroup() {
     golems.scale = 3;
     golems.collider = 'kinematic';
     golems.debug = true;
-    golems.overlaps(wizard.sprite);
+    // golems.overlaps(wizard.sprite);
 }
 
 var golemSpeed = 2;
@@ -40,13 +40,13 @@ var golemSpeed = 2;
 // outside of golem class so it applies to all golem objects
 function golemBehavior() {
     // hold 'o' key to activate golem behavior
-    if (kb.pressing('o')) { 
+    if (kb.pressing('o')) {
         for (let i = 0; i < golems.length; i++) {
             // moves golem to wizard
             golems[i].moveTo(wizard.posx, wizard.posy, golemSpeed)
 
             // "kills" wizard if golem hits him - do we need an attack animation?
-            if(golems[i].overlaps(wizard.sprite)) {
+            if (golems[i].overlaps(wizard.sprite)) {
                 // replace with death function once its done
                 wizard.sprite.position.x = 25;
                 wizard.sprite.position.y = 25;
@@ -54,7 +54,7 @@ function golemBehavior() {
 
             // kills golem if it is hit
             for (let j = 0; j < spells.length; j++) {
-                if(golems[i].overlaps(spells[j].sprite)) {
+                if (golems[i].overlaps(spells[j].sprite)) {
                     golems[i].life = 1;
                 }
             }
