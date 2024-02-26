@@ -20,6 +20,10 @@ function loadanimations() {
     runAnim = loadAnimation("assets/runAnimSheet.png",
         { frameSize: [32, 32], frames: 6 });
 
+    //loads death animation sprite sheet and seperates frames
+    deathAnim = loadAnimation("assets/deathAnimSheet.png", 
+        {frameSize: [32, 32], frames: 10}); 
+
     // loads idle animation for golem enemy
     golemIdle = loadAnimation("assets/golemIdle.png",
     { framesize: [16, 16], frames: 4 });
@@ -83,7 +87,8 @@ function draw() {
          'Space to shoot fireball sideways\n' +
          'Press 1 to change attack\n' +
          'Press b to spawn golem enemy\n' +
-         'Hold o to activate golem behavior (must be holding for attacks to effect them)', 50, 50);
+         'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
+         'Press y to die', 50, 50);
 
     // press b to spawn golem in random pos
     if (kb.presses('b')) {
