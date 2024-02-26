@@ -65,9 +65,9 @@ class AngleNode {
     constructor(x, y) {
         this.sprite = new Sprite(x, y);
         this.sprite.diameter = 9;
-        this.sprite.collider = "static";
+        this.sprite.collider = "none";
         this.isFrozen = false;
-        this.sprite.debug = true;
+        // this.sprite.debug = true;
     }
     follow(x, y) {
         this.sprite.x = x;
@@ -86,6 +86,7 @@ class AngleNode {
         delete this;
     }
 
+
     get posx() {
         return this.sprite.x;
     }
@@ -100,15 +101,21 @@ class AngleShot {
         this.sprite = new Sprite(x, y);
         this.sprite.collider = "kinematic";
         this.sprite.addAni(angleShotAnim);
-        this.sprite.animation.scale = 0.5;
+        this.sprite.animation.scale = 0.2;
         this.sprite.diameter = 10;
-        this.sprite.debug = true;
+        // this.sprite.debug = true;
+        this.sprite.life = 200;
     }
     addVelocity(velx, vely, speed) {
         this.sprite.vel.x = velx;
         this.sprite.vel.y = vely;
         this.sprite.vel.normalize().mult(speed);
     }
+    zeroVelocity() {
+        this.sprite.vel.x = 0;
+        this.sprite.vel.y = 0;
+    }
+
     get posx() {
         return this.sprite.x;
     }
@@ -128,8 +135,8 @@ var node1;
 var node2;
 var line1 = false;
 var line2 = false;
-var checkCollides = false;
-
+var angles = [];
+var angleProjectiles = [];
 
 
 // Spawns either an electric attack, or fireball at player's position, and adds
@@ -149,9 +156,7 @@ function castSpell() {
     if (line2) {
         line(node2.posx, node2.posy, node1.posx, node1.posy);
     }
-    if (checkCollides) {
 
-    }
 
 
 
@@ -162,6 +167,8 @@ function castSpell() {
         if (!anglenode1) {
             node1 = new AngleNode(mouseX - offsetX + wizard.posx, mouseY - offsetY + wizard.posy);
             anglenode1 = true;
+            angles.push(node1);
+
         }
         if (!node1.isFrozen) {
             node1.follow(mouseX - offsetX + wizard.posx, mouseY - offsetY + wizard.posy);
@@ -182,16 +189,46 @@ function castSpell() {
             projectile = new AngleShot(wizard.posx, wizard.posy);
             projectile.addVelocity(node1.posx - wizard.posx, node1.posy - wizard.posy, angleSpeed);
             checkCollides = true;
+            angleProjectiles.push(projectile);
+            angles.push(node2);
+            node1.sprite.show = false;
+            node2.sprite.show = false;
 
         }
 
 
-        // at this point, when player clicks, the position freezes, and creates a new node to follow
+        if (angleProjectiles.length > 0) {
+            if (angleProjectiles[0].sprite.overlaps(angles[0].sprite)) {
+                angleProjectiles[0].zeroVelocity();
+                angleProjectiles[0].addVelocity(angles[1].posx - angles[0].posx, angles[1].posy - angles[0].posy, angleSpeed);
+            }
+            if (angleProjectiles[0].sprite.removed) {
+                node1.despawn();
+                node2.despawn();
+                line1 = false;
+                line2 = false;
+                anglenode1 = false;
+                angles = [];
+                angleProjectiles = [];
+            }
+        }
+    } else {
+        if (angles.length > 0) {
+            if (angles.length > 1) {
+                angles[0].sprite.visible = false;
 
-        // at this point, draws line from first node to player by setting a boolean to update a line every frame outside this if-statement.
-
-
-
+                angles[1].sprite.visible = false;
+                line1 = false;
+                line2 = false;
+                angles = [];
+                angleProjectiles = [];
+                anglenode1 = false;
+            } else if (angles.length == 1) {
+                angles[0].sprite.visible = false;
+                anglenode1 = false;
+            }
+        }
+        // angles[0].sprite.visible = false;
     }
 
 
