@@ -151,6 +151,8 @@ function castSpell() {
         hasRun = true;
     }
     if (line1) {
+        drawingContext.setLineDash([20, 20]);
+        strokeWeight(0.25);
         line(node1.posx, node1.posy, wizard.posx, wizard.posy);
     }
     if (line2) {
@@ -193,7 +195,6 @@ function castSpell() {
             angles.push(node2);
             node1.sprite.show = false;
             node2.sprite.show = false;
-
         }
 
 
@@ -220,6 +221,7 @@ function castSpell() {
                 angles[1].sprite.visible = false;
                 line1 = false;
                 line2 = false;
+
                 angles = [];
                 angleProjectiles = [];
                 anglenode1 = false;
