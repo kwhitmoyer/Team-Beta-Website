@@ -102,3 +102,4 @@ function castSpell() {
     }
     if (kb.presses("1")) { currentAttack++; };
 }
+
