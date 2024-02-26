@@ -100,7 +100,7 @@ class AngleNode {
 class AngleShot {
     constructor(x, y) {
         this.sprite = new Sprite(x, y);
-        this.sprite.collider = "kinematic";
+        this.sprite.collider = "none";
         this.sprite.addAni(angleShotAnim);
         this.sprite.animation.scale = 0.2;
         this.sprite.diameter = 10;
