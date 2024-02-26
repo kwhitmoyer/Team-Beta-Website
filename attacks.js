@@ -190,7 +190,6 @@ function castSpell() {
             node2.follow(mouseX - offsetX + wizard.posx, mouseY - offsetY + wizard.posy);
         }
 
-
         if (mouse.presses() && !node1.isFrozen) { // If node 1 isnt frozen, and player clicks, freeze position, get another node to follow cursor, and draw line between player and node1
             node1.freezePosition();
             node2 = node1.nextNode();
@@ -199,12 +198,14 @@ function castSpell() {
             // draws line from node1 to node2, and shoots projectile along the path of the line.
             // dont ask questions, I think it works(maybe)
 
+
+            node2.freezePosition();                                                                 // freezes node 2 in position
+
             line2 = true;// keeps line 2 on screen
 
 
             onlyOneShot = false;                                                                    // makes sure user can only shoot one shot along that path
 
-            node2.freezePosition();                                                                 // freezes node 2 in position
 
             projectile = new AngleShot(wizard.posx, wizard.posy);                                   // shoots projectile to node1
             projectile.addVelocity(node1.posx - wizard.posx, node1.posy - wizard.posy, angleSpeed);
@@ -216,6 +217,21 @@ function castSpell() {
 
             node1.sprite.show = false;                                                              // make nodes invisible once shot is fired
             node2.sprite.show = false;
+
+
+            // if the lifespan of the projectile is over, remove the nodes and stop drawing the lines
+        } else if (angleProjectiles.length == 1) {
+            if (angleProjectiles[0].sprite.removed) {
+                node1.despawn();
+                node2.despawn();
+                line1 = false;
+                line2 = false;
+                anglenode1 = false;
+                angles = []; // set these empty, so that a projectile does not want to go to a (previously fired) node
+                angleProjectiles = [];
+                onlyOneShot = true;
+            }
+
         }
 
 
@@ -230,16 +246,7 @@ function castSpell() {
                 angleProjectiles[0].addVelocity(angles[1].posx - angles[0].posx, angles[1].posy - angles[0].posy, angleSpeed);
             }
 
-            // if the lifespan of the projectile is over, remove the nodes and stop drawing the lines
-            if (angleProjectiles[0].sprite.removed) {
-                node1.despawn();
-                node2.despawn();
-                line1 = false;
-                line2 = false;
-                anglenode1 = false;
-                angles = []; // set these empty, so that a projectile does not want to go to a (previously fired) node
-                angleProjectiles = [];
-            }
+
         }
     } else {
         // resetting every boolean value, so that angleshot can be used again later by the player.
