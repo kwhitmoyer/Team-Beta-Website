@@ -10,7 +10,7 @@ class player {
         // creates new sprite at 25, 25 with a physical size of 20 x 32 pixels
         this.sprite = new Sprite(25, 25, 20, 32);
         this.sprite.addAni(idleAnim);
-        this.sprite.collider = "none";
+        // this.sprite.collider = "none";
         //this.sprite.debug = true;
     }
 
@@ -82,14 +82,14 @@ class player {
         return moving;
     }
 
-    die(){
-        this.health = 0; 
+    die() {
+        this.health = 0;
         //Stop all player movement 
         this.sprite.vel.y = 0;
-        this.sprite.vel.x = 0; 
+        this.sprite.vel.x = 0;
         //Play the death animation once and once only
         this.sprite.changeAni(deathAnim);
-        this.sprite.animation.looping = false;  
+        this.sprite.animation.looping = false;
     }
 
     // class attributes
@@ -101,35 +101,35 @@ class player {
 
 function playerMovement() {
 
-  //keeps wizard from moving if they are dead
-  if (wizard.health > 0){
-    if (kb.presses('right')) {
-        wizard.sprite.mirror.x = false;
-        wizard.sprite.changeAni(runAnim);
+    //keeps wizard from moving if they are dead
+    if (wizard.health > 0) {
+        if (kb.presses('right')) {
+            wizard.sprite.mirror.x = false;
+            wizard.sprite.changeAni(runAnim);
+        }
+        if (kb.pressing('right')) { wizard.moveRight(); }
+        if (kb.released('right')) { wizard.stopMovementX(); }
+
+
+        // controls movement left
+        if (kb.presses('left')) {
+            wizard.sprite.mirror.x = true;
+            wizard.sprite.changeAni(runAnim);
+        }
+        if (kb.pressing('left')) { wizard.moveLeft(); }
+        if (kb.released('left')) { wizard.stopMovementX(); }
+
+
+        // controls movement down
+        if (kb.presses('down')) { wizard.sprite.changeAni(runAnim); }
+        if (kb.pressing('down')) { wizard.moveDown(); }
+        if (kb.released('down')) { wizard.stopMovementY(); }
+
+        // controls movement up
+        if (kb.presses('up')) { wizard.sprite.changeAni(runAnim); }
+        if (kb.pressing('up')) { wizard.moveUp(); }
+        if (kb.released('up')) { wizard.stopMovementY(); }
+
+        if (kb.presses('y')) { wizard.die(); }
     }
-    if (kb.pressing('right')) { wizard.moveRight(); }
-    if (kb.released('right')) { wizard.stopMovementX(); }
-
-
-    // controls movement left
-    if (kb.presses('left')) {
-        wizard.sprite.mirror.x = true;
-        wizard.sprite.changeAni(runAnim);
-    }
-    if (kb.pressing('left')) { wizard.moveLeft(); }
-    if (kb.released('left')) { wizard.stopMovementX(); }
-
-
-    // controls movement down
-    if (kb.presses('down')) { wizard.sprite.changeAni(runAnim); }
-    if (kb.pressing('down')) { wizard.moveDown(); }
-    if (kb.released('down')) { wizard.stopMovementY(); }
-
-    // controls movement up
-    if (kb.presses('up')) { wizard.sprite.changeAni(runAnim); }
-    if (kb.pressing('up')) { wizard.moveUp(); }
-    if (kb.released('up')) { wizard.stopMovementY(); }
-
-    if (kb.presses('y')) {wizard.die();} 
-  }
 }
