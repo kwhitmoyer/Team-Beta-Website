@@ -19,7 +19,6 @@ class spell {
 
     }
 
-
     // This is for shooting with spacebar, it is a set rotation along x-axis
     setRotation(rotation) {
         this.sprite.rotation = rotation;
@@ -36,7 +35,6 @@ class spell {
     }
 
 }
-
 
 // Calls super constructor, then animates fireball, with a lifetime of 100 frames
 class fireball extends spell {
@@ -94,8 +92,8 @@ class AngleNode {
     get posy() {
         return this.sprite.y;
     }
-
 }
+
 
 class AngleShot {
     constructor(x, y) {
@@ -166,8 +164,6 @@ function castSpell() {
     }
 
     if (currentAttack > 2) { currentAttack = 0; };
-
-
 
 
     // firing mode is angleshot
@@ -272,8 +268,6 @@ function castSpell() {
     }
 
 
-
-
     if (mouse.presses()) {
 
 
@@ -327,9 +321,5 @@ function castSpell() {
         }
     }
     if (kb.presses("1")) { currentAttack++; };
-
-
-
-
 }
 
