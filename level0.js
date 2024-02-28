@@ -1,11 +1,8 @@
-let floor1, floor7, torches, tilesGroup;
+var floor1, floor7, torches, tilesGroup;
 var Golem1;
 var Golem2;
 
-
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-
+function drawLevel0() {
     world.gravity.y = 0;
 
     floor1 = new Group();
@@ -27,8 +24,6 @@ function setup() {
     floor1.collider  = 'kinematic';
     floor7.collider  = 'kinematic';
     torches.collider = 'kinematic';
-
-    wizard = new player();
 
     tilesGroup = new Tiles(
         [
@@ -70,4 +65,7 @@ function setup() {
 
     //Golem1 = new golem(200, 450);
     //Golem2 = new golem(200, 0);
+
+    wizard.sprite.changeAni(idleAnim);
+    level0Drawn = 1;
 }

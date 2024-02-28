@@ -1,4 +1,4 @@
-let floor1_level1, floor7_level1, torches_level1, tilesGroup_level1;
+var floor1_level1, floor7_level1, torches_level1, tilesGroup_level1;
 var Golem1_level1, Golem2_level1;
 
 function setupLevel1() {
