@@ -1,15 +1,17 @@
 var wizard;                // declare variable that will refer to player object
 var idleAnim;              // declare variable for idle animation
 var runAnim;               // declare variable for run animation
+var emptyAnim;
+var state = 0;             // controls state (title screen, level0, level1 etc)
+var startButton;           // variable for title screen start button
+var level0Drawn = 0;       // variable used in drawing level0
 
-var i = 0;
+var i = 0; // for movement test func
 
 let electricAnim;
 const electricFrames = 20;
 
 let angleShotAnim;
-
-var GameState = [];
 
 // Loads all animations for sprites in the project.
 function loadanimations() {
@@ -26,6 +28,9 @@ function loadanimations() {
     //loads death animation sprite sheet and seperates frames
     deathAnim = loadAnimation("assets/deathAnimSheet.png",
         { frameSize: [32, 32], frames: 10 });
+
+    emptyAnim = loadAnimation("assets/emptyAnim.png",
+    { frameSize: [32, 32], frames: 1 });
 
     // loads idle animation for golem enemy
     golemIdle = loadAnimation("assets/golemIdle.png",
@@ -67,7 +72,6 @@ function loadanimations() {
 }
 
 // tests movement functions - not sure if this is good enough or not (never done TDD tbh)
-var i = 0;             // argument for testPlayerMovement()
 function testPlayerMovement(i) {
     if (i < 100) { wizard.moveRight(); };
     if (i > 100 && i < 200) { wizard.moveDown(); };
@@ -75,9 +79,27 @@ function testPlayerMovement(i) {
     if (i > 300) { wizard.moveUp(); };
 }
 
+function setupButtons() {
+    startButton = new Button({
+        x: width/2, y: height - 50,
+        width: 100, height: 50,
+        align_x: 0, align_y: 0,
+        content: 'Click to Start',
+        on_press() {
+            state++;
+        }
+    })
+}
+
 // preload images for animation - executed once
 function preload() {
     loadanimations();
+}
+
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    wizard = new player();
+    setupButtons();
     createGolemGroup();
 }
 
@@ -90,31 +112,33 @@ function preload() {
 //     wizard.sprite.overlaps(tempSprite);
 // }
 
-var i = 0;             // argument for testPlayerMovement()
-
-function drawScene() {
-    GameState = ["level0"]; // First will be menu, but that is not implemented yet.
-}
-
 var test;
 
 function draw() {
-    background("#fce1b6");   // arbitrary color choice, can be changed
-
-    text('WASD to move\n' +
-
+    // state = 0 corresponds to start screen
+    if (state == 0) {
+        background("#5cb8ff");   // arbitrary color choice, can be changed
+        fill(0);
+        textSize(50);
+        textAlign(CENTER);
+        text("The Wizard's Quest", width/2, height/2);
+        startButton.draw();
+        wizard.sprite.changeAni(emptyAnim);
+    }
+    // state = 1 corresponds to level0
+    if (state == 1) {
+        background("#fce1b6");   // arbitrary color choice, can be changed
+        if (level0Drawn == 0) { drawLevel0(); }   // makes sure level sprites only get drawn once - breaks otherwise
+        textAlign(LEFT);
+        text('WASD to move\n' +
         'Click to attack (mouse to aim)\n' +
         'Space to shoot fireball sideways\n' +
         'Press 1 to change attack\n' +
         'Press b to spawn golem enemy\n' +
         'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
-        'Press y to die', 50, 50);
-
-    // press b to spawn golem in random pos
-    if (kb.presses('b')) {
-        let newGolem;
-        newGolem = new golem(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
+        'Press y to die', 50, 100);
     }
+   
 
     // Center the canvas around the player
     translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
@@ -124,9 +148,15 @@ function draw() {
 
     playerMovement();
 
+    // press b to spawn golem in random pos
+    if (kb.presses('b')) {
+        let newGolem;
+        newGolem = new golem(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
+    }
+
     // Normalize movement, so player does not move faster in diagonal movements
     // see pyth. theorem
     wizard.normalizeMovement();
-    castSpell();
+    if (state != 0) { castSpell(); }          // prevents spells from being cast on title screen
     golemBehavior();
 }
