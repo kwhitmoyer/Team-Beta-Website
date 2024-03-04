@@ -144,7 +144,8 @@ function draw() {
         'Press 1 to change attack\n' +
         'Press b to spawn golem enemy\n' +
         'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
-        'Press y to die', 50, 100);
+        'Press y to die\n' +
+        'Press r to respawn',50, 100);
     }
 
     // Center the canvas around the player
