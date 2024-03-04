@@ -8,7 +8,7 @@ class player {
     // class methods
     constructor() {
         // creates new sprite at 25, 25 with a physical size of 20 x 32 pixels
-        this.sprite = new Sprite(25, 25, 20, 32);
+        this.sprite = new Sprite(250, 190, 20, 32);
         this.sprite.addAni(idleAnim);
         // this.sprite.collider = "none";
         //this.sprite.debug = true;
