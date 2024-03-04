@@ -79,6 +79,13 @@ function testPlayerMovement(i) {
     if (i > 300) { wizard.moveUp(); };
 }
 
+// Add a respawn function
+function respawnPlayer() {
+    wizard.health = 1;  // Reset player health
+    wizard.sprite.position.set(25, 25);  // Set the player position to the initial position
+    wizard.sprite.changeAni(idleAnim);  // Play idle animation
+}
+
 function setupButtons() {
     startButton = new Button({
         x: width/2, y: height - 50,
@@ -113,6 +120,7 @@ function setup() {
 // }
 
 var test;
+var respawnState = false; // New variable to track respawn state
 
 function draw() {
     // state = 0 corresponds to start screen
@@ -138,7 +146,6 @@ function draw() {
         'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
         'Press y to die', 50, 100);
     }
-   
 
     // Center the canvas around the player
     translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
@@ -159,4 +166,15 @@ function draw() {
     wizard.normalizeMovement();
     if (state != 0) { castSpell(); }          // prevents spells from being cast on title screen
     golemBehavior();
+
+    // Respawn player when 'r' is pressed
+    if (kb.presses('r') && !respawnState) {
+        respawnPlayer();
+        respawnState = true;
+    }
+
+    // Reset respawn state when 'r' is released
+    if (kb.released('r')) {
+        respawnState = false;
+    }
 }
