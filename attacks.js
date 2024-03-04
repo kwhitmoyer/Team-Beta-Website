@@ -156,6 +156,7 @@ function castSpell() {
     // If line1 has been drawn, keep drawing it every frame.
     if (line1) {
         drawingContext.setLineDash([20, 20]);
+        stroke(0);
         strokeWeight(0.25);
         line(node1.posx, node1.posy, wizard.posx, wizard.posy);
     }

@@ -84,12 +84,23 @@ class player {
 
     die() {
         this.health = 0;
-        //Stop all player movement 
+        // Stop all player movement 
         this.sprite.vel.y = 0;
         this.sprite.vel.x = 0;
-        //Play the death animation once and once only
+    
+        // Set the animation to the first frame of the death animation
         this.sprite.changeAni(deathAnim);
+        this.sprite.animation.frame = 0;
+    
+        // Play the death animation once and once only
+        this.sprite.animation.play();
         this.sprite.animation.looping = false;
+    }    
+
+    respawn() {
+        this.health = 1;
+        this.sprite.position.set(25, 25);
+        this.sprite.changeAni(idleAnim);  // Change animation to idle when respawning
     }
 
     // class attributes
@@ -130,6 +141,8 @@ function playerMovement() {
         if (kb.pressing('up')) { wizard.moveUp(); }
         if (kb.released('up')) { wizard.stopMovementY(); }
 
-        if (kb.presses('y')) { wizard.die(); }
+        if (kb.presses('y')) { wizard.die();}
+        // Check if 'r' is pressed to respawn
+        if (kb.presses('r')) { respawnPlayer();}
     }
 }
