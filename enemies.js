@@ -55,7 +55,7 @@ function golemBehavior() {
             // kills golem if it is hit
             for (let j = 0; j < spells.length; j++) {
                 if (golems[i].overlaps(spells[j].sprite)) {
-                    golems[i].life = 1;
+                    golems[i].life = 0;
                 }
             }
         }

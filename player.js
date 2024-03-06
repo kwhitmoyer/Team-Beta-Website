@@ -1,6 +1,49 @@
-
 const playerSpeed = 3;
 var isMoving = false;
+const inventory = [];                  // array to hold items in player intventory
+var items, bombs, potions;             // variables for items group and subgroups
+
+function createItemGroup() {
+    items = new Group();
+    items.collider = 'kinematic';
+    items.debug = true;
+    items.overlaps(wizard.sprite);
+
+    bombs = new items.Group();
+    bombs.img = 'assets/items/testItem1.png';
+    bombs.scale = 2;
+
+    potions = new items.Group();
+    potions.img = 'assets/items/testItem2.png';
+    potions.scale = 2;
+}
+
+
+class item {
+    constructor(x, y) {
+        // randomly choose between bomb or potion item - for inventory debug purposes, should be changed later (or not used at all)
+        if (Math.round(Math.random()) == 0) {
+            this.sprite = new bombs.Sprite(x, y);
+            this.itemType = 0;          // 0 for bombs
+        } else {
+            this.sprite = new potions.Sprite(x, y);
+            this.itemType = 1;          // 1 for potions
+        }
+    }
+
+    get type() {
+        return this.itemType;
+    }
+
+    itemType;
+    sprite;
+}
+
+// adds picked up item to inventory
+function addItem(item) {
+    inventory.push(item);
+}
+
 
 
 // class for player character
@@ -85,16 +128,11 @@ class player {
     die() {
       if(this.canBeDamaged){
         this.health = 0;
-        // Stop all player movement 
+        //Stop all player movement 
         this.sprite.vel.y = 0;
         this.sprite.vel.x = 0;
-    
-        // Set the animation to the first frame of the death animation
+        //Play the death animation once and once only
         this.sprite.changeAni(deathAnim);
-        this.sprite.animation.frame = 0;
-    
-        // Play the death animation once and once only
-        this.sprite.animation.play();
         this.sprite.animation.looping = false;
       }
     }    
@@ -144,8 +182,54 @@ class playerEffect extends Player{
 
 }
 
+// checks if inventory is full - right now, inventory can hold 4 items
+var inventoryCapacity = 4;
+function isInventoryFull() {
+    if (inventory.length < inventoryCapacity) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function drawInventory() {
+    var drawX;                // where to draw items
+    var drawY = height - 30;
+    for (let i = 0; i < inventory.length; i++) {
+        switch(i) {
+            case 0:
+                drawX = width - 100;
+                break;
+            case 1:
+                drawX = width - 75;
+                break;
+            case 2:
+                drawX = width - 50;
+                break;
+            case 3:
+                drawX = width - 25;
+                break;
+        }
+        
+        if (inventory[i].itemType == 0) {
+            let newBomb = new bombs.Sprite(drawX, drawY);
+            text('bomb', 350, 350);
+        } else if (inventory[i].itemType == 1) {
+            let newPotion = new potions.Sprite(drawX, drawY);
+            text('potion', 350, 350);
+        }
+    }
+}
 
 function playerMovement() {
+
+    // controls item and wizard interactions - can be moved into function
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].overlaps(wizard.sprite) && !isInventoryFull()) {
+            addItem(items[i]);
+            //items[i].life = 0;
+        }
+    }
 
     //keeps wizard from moving if they are dead
     if (wizard.health > 0) {

@@ -127,6 +127,7 @@ function setup() {
     wizard = new player();
     setupButtons();
     createGolemGroup();
+    createItemGroup();
 }
 
 // Currently implemented in level0
@@ -181,6 +182,15 @@ function draw() {
     if (kb.presses('b')) {
         let newGolem;
         newGolem = new golem(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
+    }
+
+    // spawns generic item to add to inventory
+    if (state != 0) {
+        drawInventory();
+        if (kb.presses('i')) {
+            let newItem;
+            newItem = new item(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
+        }
     }
 
     // Normalize movement, so player does not move faster in diagonal movements
