@@ -62,6 +62,16 @@ class electric extends spell {
     }
 }
 
+class fear extends spell {
+    constructor(){
+        super(); 
+        this.sprite.addAni(fearAnim);
+        this.sprite.collider = "none"; 
+        this.sprite.life = 100;
+        this.sprite.debug = true;
+    }
+}
+
 class AngleNode {
     constructor(x, y) {
         this.sprite = new Sprite(x, y);
@@ -166,7 +176,7 @@ function castSpell() {
         line(node2.posx, node2.posy, node1.posx, node1.posy);
     }
 
-    if (currentAttack > 2) { currentAttack = 0; };
+    if (currentAttack > 3) { currentAttack = 0; };
 
 
 
@@ -309,6 +319,15 @@ function castSpell() {
 
             elec.rotateSpell({ x, y });
             elec.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
+        } else if (currentAttack == 3){
+            //attack to be used by a future item effect  
+            fearSpell = new fear(); 
+
+            spells.push(fearSpell); 
+            golems.overlaps(fearSpell.sprite);
+
+            fearSpell.rotateSpell({ x, y }); 
+            fearSpell.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed); 
         }
     }
 
@@ -328,6 +347,7 @@ function castSpell() {
         }
     }
     if (kb.presses("1")) { currentAttack++; };
+
 
 
 

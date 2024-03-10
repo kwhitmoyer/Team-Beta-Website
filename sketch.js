@@ -45,6 +45,9 @@ function loadanimations() {
     teleportJump = loadAnimation("assets/teleportAnimSheet.png",
         { frameSize: [32, 32], frames: 4});
 
+    shield = loadAnimation("assets/shieldAnimSheet.png",
+        { frameSize: [32, 32], frames: 1});
+
 
     fireballAnim = loadAnimation(
         'assets/fireball/FB001.png',
@@ -71,6 +74,19 @@ function loadanimations() {
 
     angleShotAnim.frameDelay = 15;
     // angleShotAnim.scale = 0.2;
+
+    fearAnim = loadAnimation(
+        "assets/fear/fearballstage1.png",
+        "assets/fear/fearballstage2.png",
+        "assets/fear/fearballstage3.png",
+        "assets/fear/fearballstage4.png",
+        "assets/fear/fearballstage5.png",
+        "assets/fear/fearballstage6.png",
+        "assets/fear/fearballstage7.png",
+        "assets/fear/fearballstage8.png"
+    ); 
+
+
 
 }
 
