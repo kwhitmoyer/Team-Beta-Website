@@ -103,6 +103,26 @@ class player {
         this.sprite.changeAni(idleAnim);  // Change animation to idle when respawning
     }
 
+    teleport(){
+      //starting portal animation
+      this.sprite.changeAni(teleportJump); 
+      this.sprite.animation.frame = 0; 
+      this.sprite.animation.play(); 
+      this.sprite.animation.looping = false; 
+
+      //actual teleport
+      setTimeout(() => this.sprite.position.set(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401), 1000), 750); 
+      
+      //ending portal animation 
+      this.sprite.changeAni(teleportJump);
+      this.sprite.animation.frame = 0; 
+      this.sprite.animation.play(); 
+      this.sprite.animation.looping = false; 
+
+      //automatially change to idle anim if player does not move 
+      setTimeout(() => this.sprite.changeAni(idleAnim), 1500); 
+    }
+
     // class attributes
     sprite;           // player sprite
     health = 1;       // player health - currently operating on assumption that we want 1 hit death
@@ -144,5 +164,7 @@ function playerMovement() {
         if (kb.presses('y')) { wizard.die();}
         // Check if 'r' is pressed to respawn
         if (kb.presses('r')) { respawnPlayer();}
+
+        if (kb.presses('t')) { wizard.teleport();}
     }
 }

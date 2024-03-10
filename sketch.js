@@ -42,6 +42,9 @@ function loadanimations() {
         { framesize: [16, 16], frames: 4 });
     golemRun.frameDelay = 5;
 
+    teleportJump = loadAnimation("assets/teleportAnimSheet.png",
+        { frameSize: [32, 32], frames: 4});
+
 
     fireballAnim = loadAnimation(
         'assets/fireball/FB001.png',
