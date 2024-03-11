@@ -186,9 +186,9 @@ class player {
     canBeDamaged = true;  //for shield purposes 
 }
 
-class playerEffect extends Player{
+//class playerEffect extends Player{
 
-}
+//}
 
 // checks if inventory is full - right now, inventory can hold 4 items
 var inventoryCapacity = 4;
