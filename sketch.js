@@ -169,9 +169,6 @@ function draw() {
     camera.x = wizard.sprite.x;
     camera.y = wizard.sprite.y;
 
-    // Center the canvas around the player
-    translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
-
     playerMovement();
 
     // press b to spawn golem in a random pos
