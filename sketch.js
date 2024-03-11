@@ -144,7 +144,7 @@ var test;
 var respawnState = false; // New variable to track respawn state
 
 function draw() {
-    // state = 0 corresponds to start screen
+    // state = 0 corresponds to the start screen
     if (state == 0) {
         background("#5cb8ff");   // arbitrary color choice, can be changed
         fill(0);
@@ -155,29 +155,32 @@ function draw() {
         wizard.sprite.changeAni(emptyAnim);
     }
     // state = 1 corresponds to level0
-    camera.on();                    // manually turns camera on - needed for HUD sprites
+    camera.on();                    // manually turns the camera on - needed for HUD sprites
     if (state == 1) {
         background("#fce1b6");   // arbitrary color choice, can be changed
         if (level0Drawn == 0) { drawLevel0(); }   // makes sure level sprites only get drawn once - breaks otherwise
+
+        // Draw the level sprites without translation
+        tilesGroup.draw();
     }
 
-    // Center the canvas around the player
-    //translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
-
-    // Draw the player
+    // Draw the player first
     wizard.sprite.draw();
     camera.x = wizard.sprite.x;
-	camera.y = wizard.sprite.y;
+    camera.y = wizard.sprite.y;
+
+    // Center the canvas around the player
+    translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
 
     playerMovement();
 
-    // press b to spawn golem in random pos
+    // press b to spawn golem in a random pos
     if (kb.presses('b')) {
         let newGolem;
         newGolem = new golem(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
     }
 
-    // spawns generic item to add to inventory
+    // spawns a generic item to add to inventory
     if (state != 0) {
         if (kb.presses('p')) {
             let newItem;
@@ -185,11 +188,13 @@ function draw() {
         }
     }
 
-    // Normalize movement, so player does not move faster in diagonal movements
-    // see pyth. theorem
+    // Normalize movement, so the player does not move faster in diagonal movements
+    // see the Pythagorean theorem
     wizard.normalizeMovement();
-    if (state != 0) { castSpell(); }          // prevents spells from being cast on title screen
-    golemBehavior();
+    if (state != 0) {
+        castSpell(); // prevents spells from being cast on the title screen
+        golemBehavior();
+    }
 
     // Respawn player when 'r' is pressed
     if (kb.presses('r') && !respawnState) {
@@ -203,21 +208,21 @@ function draw() {
     }
 
     if (state != 0) {
-        camera.off();                       // HUD sprites must be drawn after camera turned off
+        camera.off();                       // HUD sprites must be drawn after the camera turned off
         drawInventory();
         if (state == 1) {
         textAlign(LEFT);
         text('WASD to move\n' +
         'Click to attack (mouse to aim)\n' +
-        'Space to shoot fireball sideways\n' +
+        'Space to shoot a fireball sideways\n' +
         'Press 1 to change attack\n' +
-        'Press b to spawn golem enemy\n' +
-        'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
+        'Press b to spawn a golem enemy\n' +
+        'Hold o to activate golem behavior (must be holding for attacks to affect them)\n' +
         'Press y to die\n' +
         'Press r to respawn\n' +
-        'Press p to spawn item\n' +
+        'Press p to spawn an item\n' +
         'Press t to teleport\n' +
-        'Press i for shield',50, 100);
+        'Press i for a shield', 50, 100);
         }
     }
 }
