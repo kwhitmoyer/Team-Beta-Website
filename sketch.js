@@ -19,7 +19,7 @@ new p5((p) => {
     p.draw = () => {
         p.clear();
         p.background('#fce1b6');
-        wizard.movement();
+        wizard.draw();
     }
 
     p.windowResized = () => {

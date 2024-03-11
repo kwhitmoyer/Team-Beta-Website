@@ -6,6 +6,85 @@ var currentAttack = 0;
 const angleSpeed = 7;
 
 
+
+export function makeSpell(p, x, y, type) {
+    return {
+        spellSpeed: 7,
+        spellSprite: null,
+        spellAnims: {},
+        mode: type,
+
+        setup() {
+            this.loadAnimations();
+        },
+
+        cast() {
+            if (this.mode == 0) {
+                this.fireball();
+            } else if (this.mode == 1) {
+                this.electric();
+            }
+        },
+
+        electric() {
+            this.spellSprite = new p.Sprite(x, y);
+            this.spellSprite.collider = "none";
+            this.spellSprite.addAni(this.spellAnims.electric);
+            p.angleMode(p.RADIANS);
+            this.spellSprite.rotation = Math.atan2(p.mouseY - p.height / 2, p.mouseX - p.width / 2);
+            this.spellSprite.vel.y = p.mouseY - p.height / 2;
+            this.spellSprite.vel.x = p.mouseX - p.width / 2;
+            this.spellSprite.vel.normalize().mult(this.spellSpeed);
+        },
+
+        fireball() {
+            this.spellSprite = new p.Sprite(x, y);
+            this.spellSprite.collider = "none";
+            this.spellSprite.addAni(this.spellAnims.fireball);
+            p.angleMode(p.RADIANS);
+            this.spellSprite.rotation = Math.atan2(p.mouseY - p.height / 2, p.mouseX - p.width / 2);
+            this.spellSprite.vel.y = p.mouseY - p.height / 2;
+            this.spellSprite.vel.x = p.mouseX - p.width / 2;
+            this.spellSprite.vel.normalize().mult(this.spellSpeed);
+        },
+
+
+
+        loadAnimations() {
+            this.spellAnims.fireball = p.loadAnimation(
+                'assets/fireball/FB001.png',
+                'assets/fireball/FB002.png',
+                'assets/fireball/FB003.png',
+                'assets/fireball/FB004.png'
+            );
+            this.spellAnims.fireball.frameDelay = 15;
+
+            this.spellAnims.electric = p.loadAnimation(
+                "assets/electric/tile1.png",
+                "assets/electric/tile2.png",
+                "assets/electric/tile3.png",
+                "assets/electric/tile4.png"
+            );
+            this.spellAnims.electric.frameDelay = 20;
+
+        },
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Parent class for all spells (Fireball and Electric)
 class spell {
     constructor() {
@@ -137,6 +216,15 @@ var line2 = false;
 var angles = [];
 var angleProjectiles = [];
 var onlyOneShot = true;
+
+
+
+
+
+
+
+
+
 
 
 // Spawns either an electric attack, or fireball at player's position, and adds
