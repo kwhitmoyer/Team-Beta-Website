@@ -6,8 +6,6 @@ var state = 0;             // controls state (title screen, level0, level1 etc)
 var startButton;           // variable for title screen start button
 var level0Drawn = 0;       // variable used in drawing level0
 
-var i = 0; // for movement test func
-
 let electricAnim;
 const electricFrames = 20;
 
@@ -120,6 +118,8 @@ function setupButtons() {
 // preload images for animation - executed once
 function preload() {
     loadanimations();
+    bombImg = loadImage('assets/items/testItem1.png');
+    potionImg = loadImage('assets/items/testItem2.png');
 }
 
 function setup() {
@@ -127,6 +127,8 @@ function setup() {
     wizard = new player();
     setupButtons();
     createGolemGroup();
+    createItemGroup();
+    inventoryItemSprites();
 }
 
 // Currently implemented in level0
@@ -153,27 +155,19 @@ function draw() {
         wizard.sprite.changeAni(emptyAnim);
     }
     // state = 1 corresponds to level0
+    camera.on();                    // manually turns camera on - needed for HUD sprites
     if (state == 1) {
         background("#fce1b6");   // arbitrary color choice, can be changed
         if (level0Drawn == 0) { drawLevel0(); }   // makes sure level sprites only get drawn once - breaks otherwise
-        textAlign(LEFT);
-        text('WASD to move\n' +
-        'Click to attack (mouse to aim)\n' +
-        'Space to shoot fireball sideways\n' +
-        'Press 1 to change attack\n' +
-        'Press b to spawn golem enemy\n' +
-        'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
-        'Press y to die\n' +
-        'Press r to respawn\n' +
-        'Press t to teleport\n'+ 
-        'Press i to use shield',50, 100);
     }
 
     // Center the canvas around the player
-    translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
+    //translate(windowWidth / 2 - wizard.sprite.position.x, windowHeight / 2 - wizard.sprite.position.y);
 
     // Draw the player
     wizard.sprite.draw();
+    camera.x = wizard.sprite.x;
+	camera.y = wizard.sprite.y;
 
     playerMovement();
 
@@ -181,6 +175,14 @@ function draw() {
     if (kb.presses('b')) {
         let newGolem;
         newGolem = new golem(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
+    }
+
+    // spawns generic item to add to inventory
+    if (state != 0) {
+        if (kb.presses('p')) {
+            let newItem;
+            newItem = new item(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
+        }
     }
 
     // Normalize movement, so player does not move faster in diagonal movements
@@ -198,5 +200,24 @@ function draw() {
     // Reset respawn state when 'r' is released
     if (kb.released('r')) {
         respawnState = false;
+    }
+
+    if (state != 0) {
+        camera.off();                       // HUD sprites must be drawn after camera turned off
+        drawInventory();
+        if (state == 1) {
+        textAlign(LEFT);
+        text('WASD to move\n' +
+        'Click to attack (mouse to aim)\n' +
+        'Space to shoot fireball sideways\n' +
+        'Press 1 to change attack\n' +
+        'Press b to spawn golem enemy\n' +
+        'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
+        'Press y to die\n' +
+        'Press r to respawn\n' +
+        'Press p to spawn item\n' +
+        'Press t to teleport\n' +
+        'Press i for shield',50, 100);
+        }
     }
 }

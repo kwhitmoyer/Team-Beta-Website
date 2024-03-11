@@ -1,6 +1,57 @@
-
 const playerSpeed = 3;
 var isMoving = false;
+const inventory = [];                  // array to hold items in player intventory
+const itemArray = [];                  // necessary because p5play Group array doesnt take the properties of item class with it
+var items, bombs, potions;             // variables for items group and subgroups
+var bombImg, potionImg;
+var invSprite1, invSprite2, invSprite3, invSprite4;
+
+
+function createItemGroup() {
+    items = new Group();
+    items.collider = 'kinematic';
+    items.debug = true;
+    items.overlaps(wizard.sprite);
+
+    bombs = new items.Group();
+    bombs.img = bombImg;
+    bombs.scale = 2;
+
+    potions = new items.Group();
+    potions.img = potionImg;
+    potions.scale = 2;
+}
+
+
+class item {
+    constructor(x, y) {
+        // randomly choose between bomb or potion item - for inventory debug purposes, should be changed later (or not used at all)
+        if (Math.round(Math.random()) == 0) {
+            this.sprite = new bombs.Sprite(x, y);
+            this.itemType = 0;          // 0 for bombs
+            itemArray.push(this);
+            console.log('type at spawn: ' + this.itemType);
+        } else {
+            this.sprite = new potions.Sprite(x, y);
+            this.itemType = 1;          // 1 for potions
+            itemArray.push(this);
+            console.log('type at spawn: ' + this.itemType);
+        }
+    }
+
+    get type() {
+        return this.itemType;
+    }
+
+    itemType;
+    sprite;
+}
+
+// adds picked up item to inventory
+function addItem(item) {
+    inventory.push(item);
+}
+
 
 
 // class for player character
@@ -85,16 +136,11 @@ class player {
     die() {
       if(this.canBeDamaged){
         this.health = 0;
-        // Stop all player movement 
+        //Stop all player movement 
         this.sprite.vel.y = 0;
         this.sprite.vel.x = 0;
-    
-        // Set the animation to the first frame of the death animation
+        //Play the death animation once and once only
         this.sprite.changeAni(deathAnim);
-        this.sprite.animation.frame = 0;
-    
-        // Play the death animation once and once only
-        this.sprite.animation.play();
         this.sprite.animation.looping = false;
       }
     }    
@@ -140,12 +186,103 @@ class player {
     canBeDamaged = true;  //for shield purposes 
 }
 
-class playerEffect extends Player{
+//class playerEffect extends Player{
 
+//}
+
+// checks if inventory is full - right now, inventory can hold 4 items
+var inventoryCapacity = 4;
+function isInventoryFull() {
+    if (inventory.length < inventoryCapacity) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
+// sprites for items in inventory
+function inventoryItemSprites() {
+    invSprite1 = new Sprite(width - 100 ,height - 30);
+    invSprite1.collider = 'none';
+    invSprite1.visible = false;
+
+    invSprite2 = new Sprite(width - 75 ,height - 30);
+    invSprite2.collider = 'none';
+    invSprite2.visible = false;
+
+    invSprite3 = new Sprite(width - 50 ,height - 30);
+    invSprite3.collider = 'none';
+    invSprite3.visible = false;
+
+    invSprite4 = new Sprite(width - 25 ,height - 30);
+    invSprite4.collider = 'none';
+    invSprite4.visible = false;
+}
+
+function drawInventory() {
+    for (let i = 0; i < inventory.length; i++) {
+        console.log('inventory length:' + inventory.length);
+        // determines sprite and draws it in the first slot of inventory
+        if (i == 0) {
+            if (inventory[i] == 0) {
+                invSprite1.img = bombImg;
+                invSprite1.draw();
+            } else if (inventory[i] == 1) {
+                invSprite1.img = potionImg;
+                invSprite1.draw();
+            }
+        }
+
+        // determines sprite and draws it in the second slot of inventory
+        if (i == 1) {
+            if (inventory[i] == 0) {
+                invSprite2.img = bombImg;
+                invSprite2.draw();
+            } else if (inventory[i] == 1) {
+                invSprite2.img = potionImg;
+                invSprite2.draw();
+            }
+        }
+
+        // determines sprite and draws it in the third slot of inventory
+        if (i == 2) {
+            if (inventory[i] == 0) {
+                invSprite3.img = bombImg;
+                invSprite3.draw();
+            } else if (inventory[i] == 1) {
+                invSprite3.img = potionImg;
+                invSprite3.draw();
+            }
+        }
+
+        // determines sprite and draws it in the foruth slot of inventory
+        if (i == 3) {
+            if (inventory[i] == 0) {
+                invSprite4.img = bombImg;
+                invSprite4.draw();
+            } else if (inventory[i] == 1) {
+                invSprite4.img = potionImg;
+                invSprite4.draw();
+            }
+        }
+    }
+}
 
 function playerMovement() {
+
+    // controls item and wizard interactions - can be moved into function
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].overlaps(wizard.sprite) && !isInventoryFull()) {
+            console.log('i: ' + i)
+            console.log('itemArray type: ' + itemArray[i].type);
+            inventory.push(itemArray[i].itemType);
+            console.log('inventory type: ' + inventory[i]);
+            //items[i].life = 0;
+            // if you delete the item the arrays break - working on a fix
+            items[i].visible = false;
+            items[i].position.set(-500, -500);
+        }
+    }
 
     //keeps wizard from moving if they are dead
     if (wizard.health > 0) {
