@@ -30,10 +30,12 @@ class item {
             this.sprite = new bombs.Sprite(x, y);
             this.itemType = 0;          // 0 for bombs
             itemArray.push(this);
+            console.log('type at spawn: ' + this.itemType);
         } else {
             this.sprite = new potions.Sprite(x, y);
             this.itemType = 1;          // 1 for potions
             itemArray.push(this);
+            console.log('type at spawn: ' + this.itemType);
         }
     }
 
@@ -219,6 +221,7 @@ function inventoryItemSprites() {
 
 function drawInventory() {
     for (let i = 0; i < inventory.length; i++) {
+        console.log('inventory length:' + inventory.length);
         // determines sprite and draws it in the first slot of inventory
         if (i == 0) {
             if (inventory[i] == 0) {
@@ -271,13 +274,13 @@ function playerMovement() {
     for (let i = 0; i < items.length; i++) {
         if (items[i].overlaps(wizard.sprite) && !isInventoryFull()) {
             console.log('i: ' + i)
-            console.log('itemArray: ' + itemArray[i].type);
+            console.log('itemArray type: ' + itemArray[i].type);
             inventory.push(itemArray[i].itemType);
-            console.log('inventory: ' + inventory[i]);
-        }
-
-        if (items[i].overlaps(wizard.sprite) && !isInventoryFull()) {
-            // items[i].life = 0;
+            console.log('inventory type: ' + inventory[i]);
+            //items[i].life = 0;
+            // if you delete the item the arrays break - working on a fix
+            items[i].visible = false;
+            items[i].position.set(-500, -500);
         }
     }
 
