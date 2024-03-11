@@ -83,6 +83,7 @@ class player {
     }
 
     die() {
+      if(this.canBeDamaged){
         this.health = 0;
         // Stop all player movement 
         this.sprite.vel.y = 0;
@@ -95,6 +96,7 @@ class player {
         // Play the death animation once and once only
         this.sprite.animation.play();
         this.sprite.animation.looping = false;
+      }
     }    
 
     respawn() {
@@ -103,11 +105,44 @@ class player {
         this.sprite.changeAni(idleAnim);  // Change animation to idle when respawning
     }
 
+    //Magic item effect: Make player immune to damage for a short time 
+    //TBD: tie to actual magic item 
+    //TBD: make it so player movement doesn't remove the shield
+    shield() {
+        this.sprite.changeAni(shield);
+        this.sprite.animation.play();
+        this.sprite.animation.looping = false; 
+
+        this.canBeDamaged = false;
+        setTimeout(() => {this.canBeDamaged = true; this.sprite.changeAni(idleAnim); this.sprite.animation.play();}, 2000);
+    }
+
+    //Magic item effect: teleport the player somewhere random 
+    //TBD: tie to actual magic item 
+    teleport(){
+      //teleports player character to a random spot, using the same math as how enemies are spawned randomly 
+        //starting portal animation
+        this.sprite.changeAni(teleportJump); 
+        this.sprite.animation.frame = 0; 
+        this.sprite.animation.play(); 
+        this.sprite.animation.looping = false; 
+
+        //actual teleport
+        setTimeout(() => {this.sprite.position.set(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401), 1000); this.sprite.animation.play();}, 750); 
+  
+        //automatially change to idle anim if player does not move 
+        setTimeout(() => this.sprite.changeAni(idleAnim), 1500); 
+    }
+
     // class attributes
     sprite;           // player sprite
     health = 1;       // player health - currently operating on assumption that we want 1 hit death
+    canBeDamaged = true;  //for shield purposes 
 }
 
+class playerEffect extends Player{
+
+}
 
 
 function playerMovement() {
@@ -144,5 +179,11 @@ function playerMovement() {
         if (kb.presses('y')) { wizard.die();}
         // Check if 'r' is pressed to respawn
         if (kb.presses('r')) { respawnPlayer();}
+
+        //debug: force teleport 
+        if (kb.presses('t')) { wizard.teleport();}
+
+        //debug: force shield
+        if (kb.presses('i')) { wizard.shield();}
     }
 }

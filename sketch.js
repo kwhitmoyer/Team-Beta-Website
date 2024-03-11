@@ -42,6 +42,12 @@ function loadanimations() {
         { framesize: [16, 16], frames: 4 });
     golemRun.frameDelay = 5;
 
+    teleportJump = loadAnimation("assets/teleportAnimSheet.png",
+        { frameSize: [32, 32], frames: 4});
+
+    shield = loadAnimation("assets/shieldAnimSheet.png",
+        { frameSize: [32, 32], frames: 1});
+
 
     fireballAnim = loadAnimation(
         'assets/fireball/FB001.png',
@@ -68,6 +74,19 @@ function loadanimations() {
 
     angleShotAnim.frameDelay = 15;
     // angleShotAnim.scale = 0.2;
+
+    fearAnim = loadAnimation(
+        "assets/fear/fearballstage1.png",
+        "assets/fear/fearballstage2.png",
+        "assets/fear/fearballstage3.png",
+        "assets/fear/fearballstage4.png",
+        "assets/fear/fearballstage5.png",
+        "assets/fear/fearballstage6.png",
+        "assets/fear/fearballstage7.png",
+        "assets/fear/fearballstage8.png"
+    ); 
+
+
 
 }
 
@@ -145,7 +164,9 @@ function draw() {
         'Press b to spawn golem enemy\n' +
         'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
         'Press y to die\n' +
-        'Press r to respawn',50, 100);
+        'Press r to respawn\n' +
+        'Press t to teleport\n'+ 
+        'Press i to use shield',50, 100);
     }
 
     // Center the canvas around the player
