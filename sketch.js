@@ -190,7 +190,7 @@ function draw() {
 
     // spawns generic item to add to inventory
     if (state != 0) {
-        if (kb.presses('i')) {
+        if (kb.presses('p')) {
             let newItem;
             newItem = new item(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
         }
@@ -225,7 +225,8 @@ function draw() {
         'Press b to spawn golem enemy\n' +
         'Hold o to activate golem behavior (must be holding for attacks to effect them)\n' +
         'Press y to die\n' +
-        'Press r to respawn',50, 100);
+        'Press r to respawn\n' +
+        'Press p to spawn item',50, 100);
         }
     }
 }
