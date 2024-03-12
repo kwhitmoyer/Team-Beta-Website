@@ -1,5 +1,6 @@
-
-const playerSpeed = 3;
+const originalPlayerSpeed = 3;
+const scaleAmount = 3;
+const adjustedPlayerSpeed = originalPlayerSpeed / scaleAmount;
 var isMoving = false;
 
 
@@ -7,42 +8,62 @@ var isMoving = false;
 class player {
     // class methods
     constructor() {
-        // creates new sprite at 25, 25 with a physical size of 20 x 32 pixels
         this.sprite = new Sprite(250, 190, 20, 32);
         this.sprite.addAni(idleAnim);
-        // this.sprite.collider = "none";
-        //this.sprite.debug = true;
+
+        this.collisionBox = {
+            offsetX: 4,  
+            offsetY: 28, 
+            width: 12,   
+            height: 4    
+        };
     }
 
-    // moves player right by setting velocity
-    moveRight() {
-
-        this.sprite.vel.x = playerSpeed;
-        //this.sprite.changeAni(runAnim);
-        this.sprite.mirror.x = false;
-
+    isCollidingWithWall(nextX, nextY) {
+        return false;
     }
 
-    // moves player left by setting velocity
+moveRight() {
+        const nextX = this.sprite.position.x + adjustedPlayerSpeed;
+        const nextY = this.sprite.position.y;
+        if (!this.isCollidingWithWall(nextX, nextY)) {
+            this.sprite.vel.x = adjustedPlayerSpeed;
+            this.sprite.mirror.x = false;
+        } else {
+            this.sprite.vel.x = 0;
+        }
+    }
+
     moveLeft() {
-        this.sprite.vel.x = -playerSpeed;
-        //this.sprite.changeAni(runAnim);
-        this.sprite.mirror.x = true;
+        const nextX = this.sprite.position.x - adjustedPlayerSpeed;
+        const nextY = this.sprite.position.y;
+        if (!this.isCollidingWithWall(nextX, nextY)) {
+            this.sprite.vel.x = -adjustedPlayerSpeed;
+            this.sprite.mirror.x = true;
+        } else {
+            this.sprite.vel.x = 0;
+        }
     }
 
-    // moves player down by setting velocity
     moveDown() {
-        this.sprite.vel.y = playerSpeed;
+        const nextX = this.sprite.position.x;
+        const nextY = this.sprite.position.y + adjustedPlayerSpeed;
+        if (!this.isCollidingWithWall(nextX, nextY)) {
+            this.sprite.vel.y = adjustedPlayerSpeed;
+        } else {
+            this.sprite.vel.y = 0;
+        }
     }
 
-    //this.sprite.changeAni(runAnim);
-
-
-    // moves player up by setting velocity
     moveUp() {
-        this.sprite.vel.y = -playerSpeed;
+        const nextX = this.sprite.position.x;
+        const nextY = this.sprite.position.y - adjustedPlayerSpeed;
+        if (!this.isCollidingWithWall(nextX, nextY)) {
+            this.sprite.vel.y = -adjustedPlayerSpeed;
+        } else {
+            this.sprite.vel.y = 0;
+        }
     }
-    //this.sprite.changeAni(runAnim);
 
     // stops player movement by setting velocity to 0
     stopMovementX() {
@@ -54,7 +75,7 @@ class player {
     }
 
     normalizeMovement() {
-        this.sprite.vel.normalize().mult(playerSpeed);
+        this.sprite.vel.normalize().mult(adjustedPlayerSpeed);
     }
 
     get posx() {
@@ -84,12 +105,23 @@ class player {
 
     die() {
         this.health = 0;
-        //Stop all player movement 
+        // Stop all player movement 
         this.sprite.vel.y = 0;
         this.sprite.vel.x = 0;
-        //Play the death animation once and once only
+    
+        // Set the animation to the first frame of the death animation
         this.sprite.changeAni(deathAnim);
+        this.sprite.animation.frame = 0;
+    
+        // Play the death animation once and once only
+        this.sprite.animation.play();
         this.sprite.animation.looping = false;
+    }    
+
+    respawn() {
+        this.health = 1;
+        this.sprite.position.set(25, 25);
+        this.sprite.changeAni(idleAnim);  // Change animation to idle when respawning
     }
 
     // class attributes
@@ -130,6 +162,8 @@ function playerMovement() {
         if (kb.pressing('up')) { wizard.moveUp(); }
         if (kb.released('up')) { wizard.stopMovementY(); }
 
-        if (kb.presses('y')) { wizard.die(); }
+        if (kb.presses('y')) { wizard.die();}
+        // Check if 'r' is pressed to respawn
+        if (kb.presses('r')) { respawnPlayer();}
     }
 }

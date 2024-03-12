@@ -9,29 +9,25 @@ const angleSpeed = 7;
 // Parent class for all spells (Fireball and Electric)
 class spell {
     constructor() {
-        this.sprite = new Sprite(wizard.posx, wizard.posy);
+        this.sprite = new Sprite(wizard.posx * scaleAmount, wizard.posy * scaleAmount);
 
     }
 
-    // This is to rotate spell to where the mouse is, in relation to player
+    /*/ This is to rotate spell to where the mouse is, in relation to player
     rotateSpell(rotation) {
         this.sprite.rotateTo(rotation, 100000, 0);
 
-    }
+    }*/
 
-
-    // This is for shooting with spacebar, it is a set rotation along x-axis
-    setRotation(rotation) {
-        this.sprite.rotation = rotation;
+    rotateSpell(mousePosX, mousePosY) {
+        var angle = Math.atan2(mousePosY - this.sprite.y, mousePosX - this.sprite.x);
+        this.sprite.rotation = angle;
     }
 
     // Shoots spell at set speed, changeable by const spellSpeed at top of file
     shoot(velX, velY, speed) {
-        this.sprite.vel.x = velX;
-        this.sprite.vel.y = velY;
-
-        // Normalize velocity, so that speed is constant.
-        // If not normalized, spells would be faster if the cursor is further from player.
+        this.sprite.vel.x = velX * speed;
+        this.sprite.vel.y = velY * speed;
         this.sprite.vel.normalize().mult(speed);
     }
 
@@ -146,16 +142,16 @@ var onlyOneShot = true;
 function castSpell() {
 
 
-    // to optimize calculating offsets, instead of every frame.
     if (!hasRun) {
-        offsetX = windowWidth / 2;
-        offsetY = windowHeight / 2;
+        offsetX = windowWidth / 2 - wizard.posx * scaleAmount;
+        offsetY = windowHeight / 2 - wizard.posy * scaleAmount;
         hasRun = true;
     }
 
     // If line1 has been drawn, keep drawing it every frame.
     if (line1) {
         drawingContext.setLineDash([20, 20]);
+        stroke(0);
         strokeWeight(0.25);
         line(node1.posx, node1.posy, wizard.posx, wizard.posy);
     }
@@ -272,64 +268,34 @@ function castSpell() {
     }
 
 
-
+    var mousePosX = mouseX - offsetX;
+    var mousePosY = mouseY - offsetY;
 
     if (mouse.presses()) {
-
-
-        // Angle of which to rotate the spell to face away from player
-        var x = wizard.posx + mouseX - offsetX;
-        var y = wizard.posy + mouseY - offsetY;
-
+        var angleToMouse = Math.atan2(mousePosY - (wizard.posy * scaleAmount), mousePosX - (wizard.posx * scaleAmount));
+        var directionX = Math.cos(angleToMouse);
+        var directionY = Math.sin(angleToMouse);
 
         if (currentAttack == 0) {
-            // 0 is fireball attack for now...
-
             projectile = new fireball();
-
-            // adds spell to array for overlap detection
-            spells.push(projectile);
-            golems.overlaps(projectile.sprite);
-
-            // rotateTo() in fireball child class needs object, which is why {x, y} is passed
-            projectile.rotateSpell({ x, y });
-
-            // Shoot takes 3 parameters: velocity in x direction, y direction, and the spell speed
-            // this function passes those parameters
-            projectile.shoot(mouseX - offsetX, mouseY - offsetY, spellSpeed);
         } else if (currentAttack == 1) {
-
-            // Above methods are used here as well.
-            elec = new electric();
-
-            // adds spell to array for overlap detection
-            spells.push(elec);
-            golems.overlaps(elec.sprite);
-
-            elec.rotateSpell({ x, y });
-            elec.shoot(mouseX - windowWidth / 2, mouseY - windowHeight / 2, spellSpeed);
+            projectile = new electric();
         }
+
+        spells.push(projectile);
+        projectile.rotateSpell(mousePosX, mousePosY);
+        projectile.shoot(directionX, directionY, spellSpeed);
     }
 
-    // When player presses space, fireballs are only in x-direction, wherever they are facing
     if (kb.presses(" ")) {
         projectile = new fireball();
-
-        // adds spell to array for overlap detection
         spells.push(projectile);
-        golems.overlaps(projectile.sprite);
-
         if (wizard.sprite.mirror.x) {
             projectile.setRotation(180);
-            projectile.shoot(-100000, 0, spellSpeed);
+            projectile.shoot(-spellSpeed, 0, spellSpeed);
         } else {
-            projectile.shoot(100000, 0, spellSpeed);
+            projectile.shoot(spellSpeed, 0, spellSpeed);
         }
     }
     if (kb.presses("1")) { currentAttack++; };
-
-
-
-
 }
-
