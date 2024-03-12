@@ -5,6 +5,8 @@ import { GameState } from "./gamestate.js";
 import { makePlayer } from "./player.js";
 import { overlay } from "./overlay.js";
 
+
+
 new p5((p) => {
     const wizard = new makePlayer(p);
     const map0 = new map(p);
@@ -18,6 +20,7 @@ new p5((p) => {
         p.createCanvas(p.windowWidth, p.windowHeight);
         map0.setup();
         overlayText.setup();
+
     }
 
     p.draw = () => {
@@ -30,8 +33,6 @@ new p5((p) => {
     p.windowResized = () => {
         p.resizeCanvas(p.windowWidth, p.windowHeight);
     }
-
-
 })
 
 
