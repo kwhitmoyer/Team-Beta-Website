@@ -9,25 +9,28 @@ import { overlay } from "./overlay.js";
 
 
 new p5((p) => {
-    const wizard = new makePlayer(p);
-    const map0 = new map(p);
-    const overlayText = new overlay(p);
+    const Wizard = new makePlayer(p);
+    const Map = new map(p);
+    const Overlay = new overlay(p);
+    const Gamestate = new GameState(p);
 
+    // *preload is async*
     p.preload = () => {
-        wizard.setup();
+        Wizard.setup();
+        Map.preload(Gamestate.getState());
     }
 
     p.setup = () => {
         p.createCanvas(p.windowWidth, p.windowHeight);
-        map0.setup();
-        overlayText.setup();
-
+        Overlay.setup();
+        Map.setup(Gamestate.getState());
     }
 
     p.draw = () => {
         p.clear();
         p.background('#fce1b6');
-        wizard.draw();
+        Wizard.draw();
+        Map.draw();
         // overlayText.draw();
     }
 

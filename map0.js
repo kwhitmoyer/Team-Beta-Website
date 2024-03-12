@@ -1,64 +1,101 @@
 
 
+
+
 export function map(p) {
     return {
-        floor1: null,
-        floor7: null,
-        torches: null,
-        tilesGroup: null,
+        mapData: null,
+        tilesetImage: null,
+        tileWidth: 16,
+        tileHeight: 16,
+        mapWidth: null,
+        mapHeight: null,
+        mapPixelWidth: null,
+        mapPixelHeight: null,
+        tiles: [],
+        tilesetsInfo: [],
+        wallChunks: [],
 
-        setup() {
-            this.floor1 = new p.Group();
-            this.floor7 = new p.Group();
-            this.torches = new p.Group();
-            p.world.gravity.y = 0;
-
-            this.torches.tile = '!';
-            this.floor1.tile = '_';
-            this.floor7.tile = '=';
-
-
-
-            this.floor1.w = 10; this.floor1.h = 10;
-            this.floor7.w = 10; this.floor7.h = 10;
-            this.torches.w = 10; this.torches.h = 10;
-            this.floor1.img = 'assets/levelTiles/Dungeon tileset/tile001.png';
-            this.floor7.img = 'assets/levelTiles/Dungeon tileset/tile007.png';
-            this.torches.img = 'assets/levelTiles/Dungeon tileset/01.gif';
-            this.floor1.collider = 'kinematic';
-            this.floor7.collider = 'kinematic';
-            this.torches.collider = 'kinematic';
-
-            tilesGroup = new p.Tiles(
-                [
-                    '__.!.____..____.!.__',
-                    '___=====_..======___',
-                    '___======..======___',
-                    '___==__==..==_______',
-                    '___==__==..==_______',
-                    '___======..=====____',
-                    '___=====_..======___',
-                    '___==____..____==___',
-                    '___==____..____==___',
-                    '___==____..======___',
-                    '___==____..=====____',
-                    '_________.._________',
-                    '___==============___'
-                ],
-                50,
-                50,
-                this.floor7.w + 6,
-                this.floor7.h + 6,
-                this.torches.w + 6,
-                this.torches.h + 6,
-                this.floor1.w + 6,
-                this.floor1.h + 6,
-            );
-            this.floor7.rotationLock = true;
-            this.torches.layer = 0;
-
-
+        preload(level) {
+            if (level == 'level1') {
+                this.preloadLevel1();
+            }
         },
+
+        setup(level) {
+            this.mapWidth = this.mapData.width;
+            this.mapWidth = this.mapData.height;
+            this.mapPixelWidth = this.mapWidth * this.tileWidth;
+            this.mapPixelHeight = this.mapHeight * this.tileHeight;
+            if (level == 'level1') {
+                this.parseLayers();
+            }
+        },
+
+
+        draw() {
+            p.background("#666666");
+            let scaleAmount = 1;
+            this.tiles.forEach(tile => {
+                p.image(
+                    tile.img,
+                    tile.dx * scaleAmount,
+                    tile.dy * scaleAmount,
+                    this.tileWidth * scaleAmount,
+                    this.tileHeight * scaleAmount,
+                    tile.sx,
+                    tile.sy,
+                    this.tileWidth,
+                    this.tileHeight
+                );
+            });
+        },
+
+
+        preloadLevel1() {
+            this.mapData = p.loadJSON('assets/Maps/level_1.json');
+            this.tilesetsInfo.push(p.loadImage('assets/Maps/Dungeon tileset.png'));
+        },
+
+
+        parseLayers() {
+
+            this.mapData.layers.forEach(layer => {
+                let isWallLayer = layer.name === 'wall';
+                if (layer.type === 'tilelayer') {
+                    layer.chunks.forEach(chunk => {
+                        if (isWallLayer) {
+                            this.wallChunks.push({
+                                x: chunk.x,
+                                y: chunk.y,
+                                width: chunk.width,
+                                height: chunk.height,
+                                data: chunk.data,
+                            });
+                        }
+
+                        for (let y = 0; y < chunk.height; ++y) {
+                            for (let x = 0; x < chunk.width; ++x) {
+                                let tile = chunk.data[y * chunk.width + x];
+                                if (tile !== 0) {
+                                    this.tiles.push({
+                                        img: this.tilesetsInfo[0],
+                                        sx: ((tile - 1) % 24) * this.tileHeight,
+                                        sy: (Math.floor((tile - 1) / 24)) * this.tileHeight,
+                                        dx: (chunk.x + x) * this.tileWidth,
+                                        dy: (chunk.y + y) * this.tileHeight,
+                                    });
+                                }
+                            }
+                        }
+
+                    });
+                }
+            }
+            );
+        },
+
+
 
 
     };

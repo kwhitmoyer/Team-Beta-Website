@@ -1,73 +1,73 @@
 
-const originalPlayerSpeed = 3;
-const scaleAmount = 3;
-const adjustedPlayerSpeed = originalPlayerSpeed / scaleAmount;
-var isMoving = false;
+// const originalPlayerSpeed = 3;
+// const scaleAmount = 3;
+// const adjustedPlayerSpeed = originalPlayerSpeed / scaleAmount;
+// var isMoving = false;
 
 
 // class for player character
 // TODO: implement collisionBox, and collidingwithwall() from zzio's commit(below in class player, which will be absorbed into makePlayer())
 
-class player {
-    // class methods
-    constructor() {
-        this.sprite = new Sprite(250, 190, 20, 32);
-        this.sprite.addAni(idleAnim);
+// class player {
+//     // class methods
+//     constructor() {
+//         this.sprite = new Sprite(250, 190, 20, 32);
+//         this.sprite.addAni(idleAnim);
 
-        this.collisionBox = {
-            offsetX: 4,
-            offsetY: 28,
-            width: 12,
-            height: 4
-        };
-    }
+//         this.collisionBox = {
+//             offsetX: 4,
+//             offsetY: 28,
+//             width: 12,
+//             height: 4
+//         };
+//     }
 
-    isCollidingWithWall(nextX, nextY) {
-        return false;
-    }
+//     isCollidingWithWall(nextX, nextY) {
+//         return false;
+//     }
 
-    moveRight() {
-        const nextX = this.sprite.position.x + adjustedPlayerSpeed;
-        const nextY = this.sprite.position.y;
-        if (!this.isCollidingWithWall(nextX, nextY)) {
-            this.sprite.vel.x = adjustedPlayerSpeed;
-            this.sprite.mirror.x = false;
-        } else {
-            this.sprite.vel.x = 0;
-        }
-    }
+//     moveRight() {
+//         const nextX = this.sprite.position.x + adjustedPlayerSpeed;
+//         const nextY = this.sprite.position.y;
+//         if (!this.isCollidingWithWall(nextX, nextY)) {
+//             this.sprite.vel.x = adjustedPlayerSpeed;
+//             this.sprite.mirror.x = false;
+//         } else {
+//             this.sprite.vel.x = 0;
+//         }
+//     }
 
-    moveLeft() {
-        const nextX = this.sprite.position.x - adjustedPlayerSpeed;
-        const nextY = this.sprite.position.y;
-        if (!this.isCollidingWithWall(nextX, nextY)) {
-            this.sprite.vel.x = -adjustedPlayerSpeed;
-            this.sprite.mirror.x = true;
-        } else {
-            this.sprite.vel.x = 0;
-        }
-    }
+//     moveLeft() {
+//         const nextX = this.sprite.position.x - adjustedPlayerSpeed;
+//         const nextY = this.sprite.position.y;
+//         if (!this.isCollidingWithWall(nextX, nextY)) {
+//             this.sprite.vel.x = -adjustedPlayerSpeed;
+//             this.sprite.mirror.x = true;
+//         } else {
+//             this.sprite.vel.x = 0;
+//         }
+//     }
 
-    moveDown() {
-        const nextX = this.sprite.position.x;
-        const nextY = this.sprite.position.y + adjustedPlayerSpeed;
-        if (!this.isCollidingWithWall(nextX, nextY)) {
-            this.sprite.vel.y = adjustedPlayerSpeed;
-        } else {
-            this.sprite.vel.y = 0;
-        }
-    }
+//     moveDown() {
+//         const nextX = this.sprite.position.x;
+//         const nextY = this.sprite.position.y + adjustedPlayerSpeed;
+//         if (!this.isCollidingWithWall(nextX, nextY)) {
+//             this.sprite.vel.y = adjustedPlayerSpeed;
+//         } else {
+//             this.sprite.vel.y = 0;
+//         }
+//     }
 
-    moveUp() {
-        const nextX = this.sprite.position.x;
-        const nextY = this.sprite.position.y - adjustedPlayerSpeed;
-        if (!this.isCollidingWithWall(nextX, nextY)) {
-            this.sprite.vel.y = -adjustedPlayerSpeed;
-        } else {
-            this.sprite.vel.y = 0;
-        }
-    }
-}
+//     moveUp() {
+//         const nextX = this.sprite.position.x;
+//         const nextY = this.sprite.position.y - adjustedPlayerSpeed;
+//         if (!this.isCollidingWithWall(nextX, nextY)) {
+//             this.sprite.vel.y = -adjustedPlayerSpeed;
+//         } else {
+//             this.sprite.vel.y = 0;
+//         }
+//     }
+// }
 
 
 import { makeSpell } from "./attacks.js";

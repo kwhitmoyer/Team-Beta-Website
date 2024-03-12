@@ -1,23 +1,20 @@
 
 
 
-export function GameState() {
+export function GameState(p) {
     return {
-        states: ["menu", "game", "death"],
+        states: { 0: 'menu', 1: 'level1' },
         currentstate: null,
+        currentState: 1, // to be changed to 0 first, but menu has not been implemented in refactored code.
 
-
-        load() {
-            currentState = this.states[0];
+        getState() {
+            return this.states[this.currentState];
         },
 
-        setState(state) {
-            if (this.states.includes(state, 0)) {
-                currentState = state;
-            } else {
-                console.log("This state does not exist (gamestate.js line 9)");
-            }
+        changeState(state) {
+            this.currentState = states[state];
         },
-    }
+
+    };
 }
 
