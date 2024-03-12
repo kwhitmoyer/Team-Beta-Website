@@ -11,13 +11,15 @@ export function makePlayer(p) {
         health: 1,
         spells: [],
         attackMode: 0,
-        ...makeSpell(p, 25, 25, 0),
+        spell: null,
+        invincible: false,
 
 
         draw() {
             p.camera.on();
             p.camera.x = this.sprite.position.x;
             p.camera.y = this.sprite.position.y;
+            this.spell.draw(this.sprite.position.x, this.sprite.position.y, this.attackMode);
             if (!this.isDead) {
                 this.movement();
             }
@@ -28,32 +30,34 @@ export function makePlayer(p) {
                 this.respawn();
             }
             if (p.mouse.presses()) {
-                var newSpell = new makeSpell(p, this.sprite.position.x, this.sprite.position.y, this.attackMode);
-                newSpell.setup();
-                newSpell.cast();
-                this.spells.push(newSpell);
+                this.spell.cast(this.sprite.position.x, this.sprite.position.y, this.attackMode);
+                this.spells.push(this.spell);
+
             }
             if (p.kb.presses('1')) {
                 this.attackMode++;
-                if (this.attackMode > 1) {
+                if (this.attackMode == 2) {
+
+                    this.spell.cast(this.sprite.position.x, this.sprite.position.y, this.attackMode);
+                } else if (this.attackMode > 2) {
                     this.attackMode = 0;
                 }
-
             }
+            if (p.kb.presses('t')) {
+                this.teleport();
+            }
+            if (p.kb.presses('i')) {
+                this.shield();
+            }
+
         },
-
-        // attack() {
-        //     if (this.attackMode == 0) {
-        //         var fireball = new fireball(p, this.sprite.position.x, this.sprite.position.y);
-        //     }
-        // },
-
-
 
 
         setup() {
+            this.spell = new makeSpell(p, this.attackMode);
+            this.spell.setup();
             this.loadAnimations();
-
+            this.sprite.rotationLock = true;
             this.sprite.addAni(this.animations.idle);
         },
 
@@ -70,6 +74,11 @@ export function makePlayer(p) {
             this.animations.death = p.loadAnimation("assets/deathAnimSheet.png",
                 { frameSize: [32, 32], frames: 10, loop: false });
 
+            this.animations.teleport = p.loadAnimation('assets/teleportAnimSheet.png',
+                { frameSize: [32, 32], frames: 1 });
+
+            this.animations.shield = p.loadAnimation('assets/shieldAnimSheet.png',
+                { frameSize: [32, 32], frames: 1 });
 
         },
 
@@ -195,6 +204,30 @@ export function makePlayer(p) {
             this.sprite.position.set(25, 25);
             this.sprite.changeAni(this.animations.idle);
         },
+
+        teleport() {
+            this.sprite.changeAni(this.animations.teleport);
+            this.sprite.animation.frame = 0;
+            this.sprite.animation.play();
+            this.sprite.animation.looping = false;
+            //actual teleport
+            setTimeout(() => { this.sprite.position.set(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401), 1000); this.sprite.animation.play(); }, 750);
+
+            //automatially change to idle anim if player does not move 
+            setTimeout(() => this.sprite.changeAni(this.animations.idle), 1500);
+        },
+
+        shield() {
+            this.sprite.changeAni(this.animations.shield);
+            this.sprite.animation.play();
+            this.sprite.animation.looping = false;
+
+            this.invincible = true;
+
+            setTimeout(() => { this.invincible = false; this.sprite.changeAni(this.animations.idle); this.sprite.animation.play(); }, 2000);
+        },
+
+
     };
 }
 

@@ -7,26 +7,58 @@ const angleSpeed = 7;
 
 
 
-export function makeSpell(p, x, y, type) {
+export function makeSpell(p, type) {
     return {
-        spellSpeed: 7,
+        spellSpeed: 5,
         spellSprite: null,
         spellAnims: {},
-        mode: type,
+        angleone: null,
+        angletwo: null,
+        angles: [],
+        firstFlag: true,
+        secondFlag: true,
+
+        draw(x, y, type) {
+
+
+            // anglemode
+            if (type == 2) {
+                this.angleone.position.x = p.mouseX + x - p.width / 2;
+                this.angleone.position.y = p.mouseY + y - p.height / 2;
+                if (p.mouse.presses() && this.firstFlag) {
+                    this.angles.push(this.angleone);
+                    this.firstFlag = false;
+                } else if (p.mouse.presses() && this.secondFlag) {
+                    this.angles.push(this.angletwo);
+                    this.secondFlag = false;
+                }
+
+
+            }
+        },
 
         setup() {
             this.loadAnimations();
         },
 
-        cast() {
-            if (this.mode == 0) {
-                this.fireball();
-            } else if (this.mode == 1) {
-                this.electric();
+        cast(x, y, type) {
+            if (type == 0) {
+                this.fireball(x, y);
+            } else if (type == 1) {
+                this.electric(x, y);
+            } else if (type == 2) {
+                this.angleshot(x, y);
             }
         },
 
-        electric() {
+        angleshot(x, y) {
+            this.angleone = new p.Sprite(p.mouseX, p.mouseY);
+            this.angleone.diameter = 9;
+            this.angleone.position.x = p.mouseX + x - p.width / 2;
+            this.angleone.position.y = p.mouseY + y - p.height / 2;
+        },
+
+        electric(x, y) {
             this.spellSprite = new p.Sprite(x, y);
             this.spellSprite.collider = "none";
             this.spellSprite.addAni(this.spellAnims.electric);
@@ -37,7 +69,7 @@ export function makeSpell(p, x, y, type) {
             this.spellSprite.vel.normalize().mult(this.spellSpeed);
         },
 
-        fireball() {
+        fireball(x, y) {
             this.spellSprite = new p.Sprite(x, y);
             this.spellSprite.collider = "none";
             this.spellSprite.addAni(this.spellAnims.fireball);
@@ -67,77 +99,24 @@ export function makeSpell(p, x, y, type) {
             );
             this.spellAnims.electric.frameDelay = 20;
 
+            this.spellAnims.angleAnim = p.loadAnimation(
+                "assets/tile001.png",
+                "assets/tile002.png",
+                "assets/tile003.png",
+                "assets/tile004.png"
+            );
+            this.spellAnims.angleAnim.frameDelay = 15;
+            this.spellAnims.angleAnim.scale = 0.2;
+
+
+
+
         },
 
 
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-// Parent class for all spells (Fireball and Electric)
-class spell {
-    constructor() {
-        this.sprite = new Sprite(wizard.posx, wizard.posy);
-
-    }
-
-    // This is to rotate spell to where the mouse is, in relation to player
-    rotateSpell(rotation) {
-        this.sprite.rotateTo(rotation, 100000, 0);
-
-    }
-
-    // This is for shooting with spacebar, it is a set rotation along x-axis
-    setRotation(rotation) {
-        this.sprite.rotation = rotation;
-    }
-
-    // Shoots spell at set speed, changeable by const spellSpeed at top of file
-    shoot(velX, velY, speed) {
-        this.sprite.vel.x = velX;
-        this.sprite.vel.y = velY;
-
-        // Normalize velocity, so that speed is constant.
-        // If not normalized, spells would be faster if the cursor is further from player.
-        this.sprite.vel.normalize().mult(speed);
-    }
-
-}
-
-// Calls super constructor, then animates fireball, with a lifetime of 100 frames
-class fireball extends spell {
-    constructor() {
-        super();
-        this.sprite.addAni(fireballAnim);
-        this.sprite.collider = 'none';
-        this.sprite.life = 100;
-        this.sprite.diameter = 9;
-        this.sprite.debug = true;
-    }
-}
-
-
-// Calls super constructor, then animates fireball, with a lifetime of 100 frames
-class electric extends spell {
-    constructor() {
-        super();
-        this.sprite.addAni(electricAnim);
-        this.sprite.collider = "none";
-        this.sprite.life = 100;
-        this.sprite.debug = true;
-    }
-}
 
 class AngleNode {
     constructor(x, y) {

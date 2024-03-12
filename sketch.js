@@ -1,12 +1,14 @@
 
 
-
+import { map } from "./map0.js";
 import { GameState } from "./gamestate.js";
 import { makePlayer } from "./player.js";
-
+import { overlay } from "./overlay.js";
 
 new p5((p) => {
     const wizard = new makePlayer(p);
+    const map0 = new map(p);
+    const overlayText = new overlay(p);
 
     p.preload = () => {
         wizard.setup();
@@ -14,12 +16,15 @@ new p5((p) => {
 
     p.setup = () => {
         p.createCanvas(p.windowWidth, p.windowHeight);
+        map0.setup();
+        overlayText.setup();
     }
 
     p.draw = () => {
         p.clear();
         p.background('#fce1b6');
         wizard.draw();
+        // overlayText.draw();
     }
 
     p.windowResized = () => {
