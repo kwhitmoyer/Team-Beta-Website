@@ -1,5 +1,6 @@
 
 
+export const cameraOffset = 1.5;
 
 import { map } from "./map0.js";
 import { GameState } from "./gamestate.js";

@@ -71,7 +71,7 @@
 
 
 import { makeSpell } from "./attacks.js";
-
+import { cameraOffset } from "./sketch.js";
 
 export function makePlayer(p) {
     return {
@@ -85,12 +85,13 @@ export function makePlayer(p) {
         attackMode: 0,
         spell: null,
         invincible: false,
-
+        camOffset: cameraOffset,
 
         draw() {
             p.camera.on();
             p.camera.x = this.sprite.position.x;
             p.camera.y = this.sprite.position.y;
+            p.camera.zoom = 1.5;
             this.spell.draw(this.sprite.position.x, this.sprite.position.y, this.attackMode);
             if (!this.isDead) {
                 this.movement();

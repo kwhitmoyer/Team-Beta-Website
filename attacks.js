@@ -5,6 +5,7 @@ const spellSpeed = 7;
 var currentAttack = 0;
 const angleSpeed = 7;
 
+import { cameraOffset } from "./sketch.js";
 
 
 export function makeSpell(p, type) {
@@ -17,6 +18,7 @@ export function makeSpell(p, type) {
         angles: [],
         firstFlag: true,
         secondFlag: true,
+        camOffset: cameraOffset,
 
         draw(x, y, type) {
             // anglemode
@@ -50,10 +52,10 @@ export function makeSpell(p, type) {
         },
 
         angleshot(x, y) {
-            this.angleone = new p.Sprite(p.mouseX, p.mouseY);
+            this.angleone = new p.Sprite(p.mouseX + x - p.width / 2, p.mouseY + y - p.height / 2);
             this.angleone.diameter = 9;
-            this.angleone.position.x = p.mouseX + x - p.width / 2;
-            this.angleone.position.y = p.mouseY + y - p.height / 2;
+            this.angleone.position.x = (p.mouseX + x - p.width / 2) / (this.camOffset * p.mouseX - x);
+            this.angleone.position.y = (p.mouseY + y - p.height / 2) / (this.camOffset * p.mouseY - y);
         },
 
         electric(x, y) {
