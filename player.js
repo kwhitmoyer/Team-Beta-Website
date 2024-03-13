@@ -1,7 +1,7 @@
 const playerSpeed = 3;
 var isMoving = false;
 const inventory = [];                  // array to hold items in player intventory
-const itemArray = [];                  // necessary because p5play Group array doesnt take the properties of item class with it
+// const itemArray = [];                  // no longer necessary 
 var items, bombs, potions;             // variables for items group and subgroups
 var bombImg, potionImg;
 var invSprite1, invSprite2, invSprite3, invSprite4;
@@ -16,13 +16,33 @@ function createItemGroup() {
     bombs = new items.Group();
     bombs.img = bombImg;
     bombs.scale = 2;
+    bombs.itemType = 'bomb';
 
     potions = new items.Group();
     potions.img = potionImg;
     potions.scale = 2;
+    potions.itemType = 'potion';
+
+    wizard.sprite.overlaps(items, collectItem);
 }
 
+function collectItem(wizard, item) {
+    if (!isInventoryFull()) {
+        inventory.push(item.itemType);
+        item.life = 0;
+    }
+}
 
+function item(x, y) {
+    if (Math.round(Math.random()) == 0) {
+        this.sprite = new bombs.Sprite(x, y);
+    } else {
+        this.sprite = new potions.Sprite(x, y);
+    }
+}
+
+// old item code
+/*
 class item {
     constructor(x, y) {
         // randomly choose between bomb or potion item - for inventory debug purposes, should be changed later (or not used at all)
@@ -47,10 +67,12 @@ class item {
     sprite;
 }
 
+
 // adds picked up item to inventory
 function addItem(item) {
     inventory.push(item);
 }
+*/
 
 
 
@@ -224,10 +246,10 @@ function drawInventory() {
         console.log('inventory length:' + inventory.length);
         // determines sprite and draws it in the first slot of inventory
         if (i == 0) {
-            if (inventory[i] == 0) {
+            if (inventory[i] == 'bomb') {
                 invSprite1.img = bombImg;
                 invSprite1.draw();
-            } else if (inventory[i] == 1) {
+            } else if (inventory[i] == 'potion') {
                 invSprite1.img = potionImg;
                 invSprite1.draw();
             }
@@ -235,10 +257,10 @@ function drawInventory() {
 
         // determines sprite and draws it in the second slot of inventory
         if (i == 1) {
-            if (inventory[i] == 0) {
+            if (inventory[i] == 'bomb') {
                 invSprite2.img = bombImg;
                 invSprite2.draw();
-            } else if (inventory[i] == 1) {
+            } else if (inventory[i] == 'potion') {
                 invSprite2.img = potionImg;
                 invSprite2.draw();
             }
@@ -246,10 +268,10 @@ function drawInventory() {
 
         // determines sprite and draws it in the third slot of inventory
         if (i == 2) {
-            if (inventory[i] == 0) {
+            if (inventory[i] == 'bomb') {
                 invSprite3.img = bombImg;
                 invSprite3.draw();
-            } else if (inventory[i] == 1) {
+            } else if (inventory[i] == 'potion') {
                 invSprite3.img = potionImg;
                 invSprite3.draw();
             }
@@ -257,10 +279,10 @@ function drawInventory() {
 
         // determines sprite and draws it in the foruth slot of inventory
         if (i == 3) {
-            if (inventory[i] == 0) {
+            if (inventory[i] == 'bomb') {
                 invSprite4.img = bombImg;
                 invSprite4.draw();
-            } else if (inventory[i] == 1) {
+            } else if (inventory[i] == 'potion') {
                 invSprite4.img = potionImg;
                 invSprite4.draw();
             }
@@ -270,6 +292,7 @@ function drawInventory() {
 
 function playerMovement() {
 
+    /* old code
     // controls item and wizard interactions - can be moved into function
     for (let i = 0; i < items.length; i++) {
         if (items[i].overlaps(wizard.sprite) && !isInventoryFull()) {
@@ -283,6 +306,7 @@ function playerMovement() {
             items[i].position.set(-500, -500);
         }
     }
+    */
 
     //keeps wizard from moving if they are dead
     if (wizard.health > 0) {

@@ -181,7 +181,7 @@ function draw() {
     if (state != 0) {
         if (kb.presses('p')) {
             let newItem;
-            newItem = new item(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
+            newItem = item(Math.floor(Math.random() * 401), Math.floor(Math.random() * 401));
         }
     }
 
