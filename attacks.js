@@ -13,8 +13,8 @@ export function makeSpell(p, type) {
         spellSpeed: 5,
         spellSprite: null,
         spellAnims: {},
-        angleone: null,
-        angletwo: null,
+        lifeSpan: 100,
+        currentAngle: null,
         angles: [],
         firstFlag: true,
         secondFlag: true,
@@ -23,17 +23,8 @@ export function makeSpell(p, type) {
         draw(x, y, type) {
             // anglemode
             if (type == 2) {
-                this.angleone.position.x = p.mouseX + x - p.width / 2;
-                this.angleone.position.y = p.mouseY + y - p.height / 2;
-                if (p.mouse.presses() && this.firstFlag) {
-                    this.angles.push(this.angleone);
-                    this.firstFlag = false;
-                } else if (p.mouse.presses() && this.secondFlag) {
-                    this.angles.push(this.angletwo);
-                    this.secondFlag = false;
-                }
-
-
+                this.currentAngle.position.x = (p.mouseX - p.width / 2) / this.camOffset + x;
+                this.currentAngle.position.y = (p.mouseY - p.height / 2) / this.camOffset + y;
             }
         },
 
@@ -48,14 +39,15 @@ export function makeSpell(p, type) {
                 this.electric(x, y);
             } else if (type == 2) {
                 this.angleshot(x, y);
+                console.log(this.angles);
             }
         },
 
         angleshot(x, y) {
-            this.angleone = new p.Sprite(p.mouseX + x - p.width / 2, p.mouseY + y - p.height / 2);
-            this.angleone.diameter = 9;
-            this.angleone.position.x = (p.mouseX + x - p.width / 2) / (this.camOffset * p.mouseX - x);
-            this.angleone.position.y = (p.mouseY + y - p.height / 2) / (this.camOffset * p.mouseY - y);
+            this.currentAngle = new p.Sprite((p.mouseX - p.width / 2) / this.camOffset + x, (p.mouseY - p.height / 2) / this.camOffset + y);
+            this.currentAngle.diameter = 11 / this.camOffset;
+            this.currentAngle.collider = "none";
+            this.angles.push(this.currentAngle);
         },
 
         electric(x, y) {
@@ -67,6 +59,8 @@ export function makeSpell(p, type) {
             this.spellSprite.vel.y = p.mouseY - p.height / 2;
             this.spellSprite.vel.x = p.mouseX - p.width / 2;
             this.spellSprite.vel.normalize().mult(this.spellSpeed);
+            this.spellSprite.life = this.lifeSpan;
+
         },
 
         fireball(x, y) {
@@ -78,6 +72,8 @@ export function makeSpell(p, type) {
             this.spellSprite.vel.y = p.mouseY - p.height / 2;
             this.spellSprite.vel.x = p.mouseX - p.width / 2;
             this.spellSprite.vel.normalize().mult(this.spellSpeed);
+            this.spellSprite.life = this.lifeSpan;
+            this.spellSprite.id = 10;
         },
 
 

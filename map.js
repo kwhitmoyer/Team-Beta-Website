@@ -29,8 +29,11 @@ export function map(p) {
             this.mapPixelHeight = this.mapHeight * this.tileHeight;
             if (level == 'level1') {
                 this.parseLayers();
+
             }
         },
+
+
 
 
         draw() {
@@ -72,6 +75,7 @@ export function map(p) {
                                 height: chunk.height,
                                 data: chunk.data,
                             });
+
                         }
 
                         for (let y = 0; y < chunk.height; ++y) {
@@ -86,6 +90,7 @@ export function map(p) {
                                         dy: (chunk.y + y) * this.tileHeight,
                                     });
                                 }
+
                             }
                         }
 

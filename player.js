@@ -73,6 +73,7 @@
 import { makeSpell } from "./attacks.js";
 import { cameraOffset } from "./sketch.js";
 
+
 export function makePlayer(p) {
     return {
         sprite: new p.Sprite(25, 25, 20, 32),
@@ -86,46 +87,63 @@ export function makePlayer(p) {
         spell: null,
         invincible: false,
         camOffset: cameraOffset,
+        inventory: [],
 
         draw() {
             p.camera.on();
             p.camera.x = this.sprite.position.x;
             p.camera.y = this.sprite.position.y;
-            p.camera.zoom = 1.5;
+            p.camera.zoom = this.camOffset;
             this.spell.draw(this.sprite.position.x, this.sprite.position.y, this.attackMode);
             if (!this.isDead) {
+                // if player, is dead, they cannot cast, die again, move, or teleport
                 this.movement();
-            }
-            if (p.kb.presses('y')) {
-                this.die();
-            }
-            if (p.kb.presses('r')) {
-                this.respawn();
-            }
-            if (p.mouse.presses()) {
-                this.spell.cast(this.sprite.position.x, this.sprite.position.y, this.attackMode);
-                this.spells.push(this.spell);
+                if (p.kb.presses('y')) {
 
-            }
-            if (p.kb.presses('1')) {
-                this.attackMode++;
-                if (this.attackMode == 2) {
+                    this.die();
 
+                }
+
+                if (p.mouse.presses()) {
+                    // cast spell, and move it into spell array
                     this.spell.cast(this.sprite.position.x, this.sprite.position.y, this.attackMode);
-                } else if (this.attackMode > 2) {
-                    this.attackMode = 0;
+                    this.spells.push(this.spell);
+
+                }
+                if (p.kb.presses('1')) {
+                    // switch attack mode (to be changed to keybinds later)
+                    this.attackMode++;
+                    if (this.attackMode == 2) {
+                        // if attackmode is 2(angleshot), cast, but cannot go above, because only reacts AFTER mouse press
+                        this.spell.cast(this.sprite.position.x, this.sprite.position.y, this.attackMode);
+
+                    } else if (this.attackMode > 2) {
+
+                        this.attackMode = 0;
+
+                    }
+                }
+                if (p.kb.presses('t')) {
+
+                    this.teleport();
+
+                }
+                if (p.kb.presses('i')) {
+
+                    this.shield();
+
                 }
             }
-            if (p.kb.presses('t')) {
-                this.teleport();
+            if (p.kb.presses('r')) {
+
+                this.respawn();
             }
-            if (p.kb.presses('i')) {
-                this.shield();
-            }
+
+
         },
 
         normalizeMovement() {
-            this.sprite.vel.normalize().mult(adjustedPlayerSpeed);
+            this.sprite.vel.normalize().mult(this.speed);
         },
 
         setup() {
@@ -134,6 +152,7 @@ export function makePlayer(p) {
             this.loadAnimations();
             this.sprite.rotationLock = true;
             this.sprite.addAni(this.animations.idle);
+            this.sprite.debug = true;
         },
 
 
@@ -274,8 +293,8 @@ export function makePlayer(p) {
                 this.movingLat = false;
             };
 
-
-            if (this.movingLat && this.movingVert) { this.normalize(); }
+            // diaganol movement => normalize vector and mult by speed
+            if (this.movingLat && this.movingVert) { this.normalizeMovement(); }
         },
 
 
@@ -323,6 +342,10 @@ export function makePlayer(p) {
 
             setTimeout(() => { this.invincible = false; this.sprite.changeAni(this.animations.idle); this.sprite.animation.play(); }, 2000);
         },
+
+        deleteSpell(id) {
+
+        }
 
 
     };

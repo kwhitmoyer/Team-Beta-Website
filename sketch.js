@@ -1,8 +1,8 @@
 
 
-export const cameraOffset = 1.5;
+export const cameraOffset = 1.6;
 
-import { map } from "./map0.js";
+import { map } from "./map.js";
 import { GameState } from "./gamestate.js";
 import { makePlayer } from "./player.js";
 import { overlay } from "./overlay.js";
@@ -28,6 +28,7 @@ new p5((p) => {
     }
 
     p.draw = () => {
+        // p.ambientLight(50);
         p.clear();
         p.background('#fce1b6');
         Wizard.draw();
