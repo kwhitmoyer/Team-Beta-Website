@@ -1,0 +1,27 @@
+name: Selenium Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.2'
+        
+    - name: Install ChromeDriver
+      run: |
+        choco install chromedriver
+      shell: powershell
+        
+    - name: Install Selenium
+      run: |
+        pip install selenium
+        
+    - name: Run Selenium test script
+      run: python wizard_test.py
