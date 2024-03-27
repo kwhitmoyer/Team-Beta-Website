@@ -24,4 +24,4 @@ jobs:
         pip install selenium
         
     - name: Run Selenium test script
-      run: python wizard_test.py
+      run: python .github/workflows/wizard_test.py
