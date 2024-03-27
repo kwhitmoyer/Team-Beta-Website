@@ -16,7 +16,7 @@ jobs:
         
     - name: Install ChromeDriver
       run: |
-        choco install chromedriver --version=123.0.6312.58
+        choco install chromedriver 
       shell: powershell
         
     - name: Install Selenium
